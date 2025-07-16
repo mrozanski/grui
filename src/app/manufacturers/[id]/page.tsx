@@ -73,7 +73,7 @@ export default async function ManufacturerDetailPage({ params }: Props) {
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-light text-gray-700">
               {manufacturer.name}
             </h1>
             <Badge className={getStatusColor(manufacturer.status)}>

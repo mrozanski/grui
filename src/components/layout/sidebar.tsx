@@ -27,10 +27,10 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="flex h-full w-64 flex-col bg-gray-900">
+    <div className="flex h-full w-64 flex-col bg-background-contrast">
       <div className="flex h-16 items-center px-6">
         <Guitar className="h-8 w-8 text-white" />
-        <span className="ml-3 text-xl font-semibold text-white">
+        <span className="ml-3 text-xl font-light text-white">
           Guitar Registry
         </span>
       </div>
