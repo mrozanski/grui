@@ -44,3 +44,5 @@ next-env.d.ts
 
 CLAUDE_SESSION_HISTORY.md
 CLAUDE_TODO_STATE.md
+
+/.claude
