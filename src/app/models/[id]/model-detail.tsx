@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink, Package, FileText, Guitar, DollarSign, Building } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import Image from "next/image"
 
 interface ModelDetailProps {
   params: Promise<{ id: string }>
@@ -142,7 +143,12 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
           </div>
         </div>
         
-        <Guitar className="h-16 w-16 text-gray-300" />
+        <Image
+          src="/images/guitars/guitar-default.jpg"
+          alt="Guitar model placeholder"
+          width={400}
+          height={300}
+        />
       </div>
 
       {/* Stats cards */}
