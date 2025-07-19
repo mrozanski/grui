@@ -20,6 +20,15 @@ interface ManufacturersListProps {
       models: number
       product_lines: number
     }
+    logo: {
+      id: string
+      thumbnail_url: string | null
+      small_url: string | null
+      medium_url: string | null
+      large_url: string | null
+      original_url: string
+      caption: string | null
+    } | null
   }>
 }
 

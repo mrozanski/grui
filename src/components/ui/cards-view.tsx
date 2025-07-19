@@ -16,6 +16,15 @@ interface ManufacturerCardsViewProps {
       models: number
       product_lines: number
     }
+    logo: {
+      id: string
+      thumbnail_url: string | null
+      small_url: string | null
+      medium_url: string | null
+      large_url: string | null
+      original_url: string
+      caption: string | null
+    } | null
   }>
 }
 
@@ -48,15 +57,27 @@ export function ManufacturerCardsView({ manufacturers }: ManufacturerCardsViewPr
           <Card className="h-full transition-shadow hover:shadow-lg">
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className="space-y-2">
+                <div className="flex-1 space-y-2">
                   <CardTitle className="text-lg">{manufacturer.name}</CardTitle>
                   <Badge className={getStatusColor(manufacturer.status)}>
                     {manufacturer.status || 'unknown'}
                   </Badge>
                 </div>
-                {manufacturer.website && (
-                  <ExternalLink className="h-4 w-4 text-gray-400" />
-                )}
+                <div className="flex items-center gap-2">
+                  {manufacturer.logo && (
+                    <div className="w-[150px] h-12 flex items-center justify-center">
+                      <img
+                        src={manufacturer.logo.medium_url || manufacturer.logo.original_url}
+                        alt={manufacturer.logo.caption || `${manufacturer.name} logo`}
+                        className="max-w-full max-h-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  {/* {manufacturer.website && (
+                    <ExternalLink className="h-4 w-4 text-gray-400" />
+                  )} */}
+                </div>
               </div>
               <CardDescription className="space-y-2">
                 {manufacturer.country && (
