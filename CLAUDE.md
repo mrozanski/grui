@@ -52,3 +52,7 @@ When creating new list or detail components that require both data fetching and 
 5. **Type Safety**: Use proper TypeScript interfaces and avoid `any` types in render functions.
 
 This pattern prevents "async Client Component" errors and follows Next.js best practices.
+
+## Development Workflow
+
+- After finishing any task that involved editing code, always run `npx tsc --noEmit --project .` to check for type and syntax errors.
