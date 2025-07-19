@@ -86,7 +86,17 @@ model finishes {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model individual_guitars {
   id                      String                 @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  
+  // Foreign key reference (optional - for complete data)
   model_id                String?                @db.Uuid
+  
+  // Fallback text fields (for incomplete data)
+  manufacturer_name_fallback String?             @db.VarChar(100)
+  model_name_fallback        String?             @db.VarChar(150)
+  year_estimate              String?             @db.VarChar(50) // Allows "circa 1959", "late 1950s", etc.
+  description                String?             // General description when model info is incomplete
+  
+  // Guitar-specific fields
   serial_number           String?                @unique @db.VarChar(50)
   production_date         DateTime?              @db.Date
   production_number       Int?
@@ -99,6 +109,7 @@ model individual_guitars {
   provenance_notes        String?
   created_at              DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at              DateTime?              @default(now()) @db.Timestamptz(6)
+  
   finishes                finishes[]
   models                  models?                @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   market_valuations       market_valuations[]

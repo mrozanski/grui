@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package } from "lucide-react"
+import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, Users, DollarSign } from "lucide-react"
 
 interface ManufacturerCardsViewProps {
   manufacturers: Array<{
@@ -246,6 +246,182 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
                   <div className="flex items-center gap-1">
                     <Package className="h-4 w-4" />
                     <span>{model._count.finishes} finishes</span>
+                  </div>
+                </div>
+                <ExternalLink className="h-4 w-4" />
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+interface GuitarCardsViewProps {
+  guitars: Array<{
+    id: string
+    serial_number: string | null
+    production_date: Date | null
+    significance_level: string | null
+    current_estimated_value: number | null
+    condition_rating: string | null
+    manufacturer_name_fallback: string | null
+    model_name_fallback: string | null
+    year_estimate: string | null
+    description: string | null
+    models: {
+      id: string
+      name: string
+      year: number
+      manufacturers: {
+        id: string
+        name: string
+      } | null
+    } | null
+    _count: {
+      notable_associations: number
+      market_valuations: number
+    }
+  }>
+}
+
+function getSignificanceColor(level: string | null) {
+  switch (level?.toLowerCase()) {
+    case 'legendary':
+      return 'bg-purple-100 text-purple-800'
+    case 'historic':
+      return 'bg-blue-100 text-blue-800'
+    case 'notable':
+      return 'bg-green-100 text-green-800'
+    case 'rare':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+function getConditionColor(condition: string | null) {
+  switch (condition?.toLowerCase()) {
+    case 'mint':
+      return 'bg-green-100 text-green-800'
+    case 'excellent':
+      return 'bg-blue-100 text-blue-800'
+    case 'very good':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'good':
+      return 'bg-orange-100 text-orange-800'
+    case 'fair':
+      return 'bg-red-100 text-red-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+function formatCurrencyGuitar(amount: number | null) {
+  if (!amount) return null
+  
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(Number(amount))
+  } catch {
+    return `$${Number(amount).toLocaleString()}`
+  }
+}
+
+function formatDate(date: Date | null) {
+  if (!date) return null
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'short'
+  }).format(date)
+}
+
+export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
+  if (guitars.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Guitar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <p className="text-gray-500">No guitars found.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {guitars.map((guitar) => (
+        <Link key={guitar.id} href={`/guitars/${guitar.id}`}>
+          <Card className="h-full transition-shadow hover:shadow-lg cursor-pointer">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                  <CardTitle className="text-lg">
+                    {guitar.models ? (
+                      `${guitar.models.manufacturers?.name || 'Unknown'} ${guitar.models.name}`
+                    ) : (
+                      `${guitar.manufacturer_name_fallback || 'Unknown'} ${guitar.model_name_fallback || 'Model'}`
+                    )}
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Badge className={getSignificanceColor(guitar.significance_level)}>
+                      {guitar.significance_level || 'notable'}
+                    </Badge>
+                    {guitar.condition_rating && (
+                      <Badge className={getConditionColor(guitar.condition_rating)} variant="outline">
+                        {guitar.condition_rating}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <Guitar className="h-5 w-5 text-gray-400" />
+              </div>
+              <CardDescription>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Serial:</span>
+                    <span className="font-mono text-xs">{guitar.serial_number || 'N/A'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Year:</span>
+                    <span>
+                      {guitar.models ? guitar.models.year : guitar.year_estimate || 'Unknown'}
+                    </span>
+                  </div>
+                  {guitar.production_date && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Production:</span>
+                      <span>{formatDate(guitar.production_date)}</span>
+                    </div>
+                  )}
+                  {guitar.current_estimated_value && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Est. Value:</span>
+                      <span className="text-green-600 font-medium">
+                        {formatCurrencyGuitar(guitar.current_estimated_value)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {guitar.description && (
+                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                  {guitar.description}
+                </p>
+              )}
+              
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    <span>{guitar._count.notable_associations} associations</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <DollarSign className="h-4 w-4" />
+                    <span>{guitar._count.market_valuations} valuations</span>
                   </div>
                 </div>
                 <ExternalLink className="h-4 w-4" />
