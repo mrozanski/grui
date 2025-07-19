@@ -33,9 +33,13 @@ async function getData() {
         id: true,
         serial_number: true,
         significance_level: true,
+        manufacturer_name_fallback: true,
+        model_name_fallback: true,
+        year_estimate: true,
         models: {
           select: {
             name: true,
+            year: true,
             manufacturers: {
               select: {
                 name: true,

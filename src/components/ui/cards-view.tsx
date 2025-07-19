@@ -2,6 +2,13 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, Users, DollarSign } from "lucide-react"
+import { 
+  getGuitarDisplayName, 
+  getGuitarDisplayYear, 
+  getSignificanceColor, 
+  getConditionColor, 
+  formatCurrency as formatCurrencyGuitar 
+} from "@/lib/guitar-utils"
 
 interface ManufacturerCardsViewProps {
   manufacturers: Array<{
@@ -286,51 +293,6 @@ interface GuitarCardsViewProps {
   }>
 }
 
-function getSignificanceColor(level: string | null) {
-  switch (level?.toLowerCase()) {
-    case 'legendary':
-      return 'bg-purple-100 text-purple-800'
-    case 'historic':
-      return 'bg-blue-100 text-blue-800'
-    case 'notable':
-      return 'bg-green-100 text-green-800'
-    case 'rare':
-      return 'bg-yellow-100 text-yellow-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function getConditionColor(condition: string | null) {
-  switch (condition?.toLowerCase()) {
-    case 'mint':
-      return 'bg-green-100 text-green-800'
-    case 'excellent':
-      return 'bg-blue-100 text-blue-800'
-    case 'very good':
-      return 'bg-yellow-100 text-yellow-800'
-    case 'good':
-      return 'bg-orange-100 text-orange-800'
-    case 'fair':
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function formatCurrencyGuitar(amount: number | null) {
-  if (!amount) return null
-  
-  try {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(Number(amount))
-  } catch {
-    return `$${Number(amount).toLocaleString()}`
-  }
-}
-
 function formatDate(date: Date | null) {
   if (!date) return null
   return new Intl.DateTimeFormat('en-US', {
@@ -358,11 +320,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
                   <CardTitle className="text-lg">
-                    {guitar.models ? (
-                      `${guitar.models.manufacturers?.name || 'Unknown'} ${guitar.models.name}`
-                    ) : (
-                      `${guitar.manufacturer_name_fallback || 'Unknown'} ${guitar.model_name_fallback || 'Model'}`
-                    )}
+                    {getGuitarDisplayName(guitar)}
                   </CardTitle>
                   <div className="flex gap-2">
                     <Badge className={getSignificanceColor(guitar.significance_level)}>
@@ -385,9 +343,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-medium">Year:</span>
-                    <span>
-                      {guitar.models ? guitar.models.year : guitar.year_estimate || 'Unknown'}
-                    </span>
+                    <span>{getGuitarDisplayYear(guitar)}</span>
                   </div>
                   {guitar.production_date && (
                     <div className="flex items-center gap-2">

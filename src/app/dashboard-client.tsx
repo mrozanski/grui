@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Factory, Guitar, Package, FileText, Users } from "lucide-react"
 import Link from "next/link"
+import { getGuitarDisplayName, getSignificanceColor } from "@/lib/guitar-utils"
 
 interface Manufacturer {
   id: string
@@ -16,8 +17,12 @@ interface Guitar {
   id: string
   serial_number: string | null
   significance_level: string | null
+  manufacturer_name_fallback: string | null
+  model_name_fallback: string | null
+  year_estimate: string | null
   models: {
     name: string
+    year: number
     manufacturers: {
       name: string
     } | null
@@ -80,19 +85,6 @@ export function DashboardClient({ data }: DashboardClientProps) {
       description: "Famous players and owners",
     },
   ]
-
-  const getStatusColor = (status: string | null) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800'
-      case 'defunct':
-        return 'bg-red-100 text-red-800'
-      case 'acquired':
-        return 'bg-yellow-100 text-yellow-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   return (
     <div className="space-y-8">
@@ -173,13 +165,13 @@ export function DashboardClient({ data }: DashboardClientProps) {
                 >
                   <div>
                     <p className="font-medium">
-                      {guitar.models?.manufacturers?.name || 'Unknown'} {guitar.models?.name || 'Unknown Model'}
+                      {getGuitarDisplayName(guitar)}
                     </p>
                     <p className="text-sm text-gray-500">
                       {guitar.serial_number ? `S/N: ${guitar.serial_number}` : 'No serial number'}
                     </p>
                   </div>
-                  <Badge variant="outline">
+                  <Badge className={getSignificanceColor(guitar.significance_level)}>
                     {guitar.significance_level || 'notable'}
                   </Badge>
                 </Link>
@@ -190,4 +182,17 @@ export function DashboardClient({ data }: DashboardClientProps) {
       </div>
     </div>
   )
+}
+
+function getStatusColor(status: string | null) {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 text-green-800'
+    case 'defunct':
+      return 'bg-red-100 text-red-800'
+    case 'acquired':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
 }
