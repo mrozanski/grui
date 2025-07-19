@@ -60,6 +60,7 @@ model data_sources {
   created_at        DateTime?           @default(now()) @db.Timestamptz(6)
   citations         citations[]
   market_valuations market_valuations[]
+  image_sources     image_sources[]
 
   @@index([source_type], map: "idx_data_sources_type")
 }
@@ -77,12 +78,25 @@ model finishes {
   created_at           DateTime?           @default(now()) @db.Timestamptz(6)
   individual_guitars   individual_guitars? @relation(fields: [individual_guitar_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   models               models?             @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([model_id], map: "idx_finishes_model")
+  @@index([individual_guitar_id], map: "idx_finishes_individual")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model individual_guitars {
   id                      String                 @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  
+  // Foreign key reference (optional - for complete data)
   model_id                String?                @db.Uuid
+  
+  // Fallback text fields (for incomplete data)
+  manufacturer_name_fallback String?             @db.VarChar(100)
+  model_name_fallback        String?             @db.VarChar(150)
+  year_estimate              String?             @db.VarChar(50) // Allows "circa 1959", "late 1950s", etc.
+  description                String?             // General description when model info is incomplete
+  
+  // Guitar-specific fields
   serial_number           String?                @unique @db.VarChar(50)
   production_date         DateTime?              @db.Date
   production_number       Int?
@@ -95,6 +109,7 @@ model individual_guitars {
   provenance_notes        String?
   created_at              DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at              DateTime?              @default(now()) @db.Timestamptz(6)
+  
   finishes                finishes[]
   models                  models?                @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   market_valuations       market_valuations[]
@@ -104,6 +119,116 @@ model individual_guitars {
   @@index([model_id], map: "idx_individual_guitars_model")
   @@index([significance_level], map: "idx_individual_guitars_significance")
   @@index([model_id, serial_number, significance_level, current_estimated_value, condition_rating], map: "idx_individual_guitars_with_value")
+}
+
+/// Image storage metadata table with direct entity associations
+model images {
+  id                    String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  
+  // Entity association (direct approach)
+  entity_type           String    @db.VarChar(50)
+  entity_id             String    @db.Uuid
+  image_type            String    @db.VarChar(50) // primary, gallery, headstock, serial, detail, etc
+  is_primary            Boolean   @default(false)
+  display_order         Int       @default(0)
+  caption               String?
+  
+  // Storage information (shared across duplicates)
+  storage_provider      String    @db.VarChar(50) @default("cloudinary")
+  storage_key           String    @db.VarChar(500) // This should be the same for all duplicates of an image
+  original_url          String
+  
+  // Image variants (responsive images)
+  thumbnail_url         String?
+  small_url             String?   // 400px wide
+  medium_url            String?   // 800px wide
+  large_url             String?   // 1600px wide
+  xlarge_url            String?   // 2400px wide
+  
+  // Metadata
+  original_filename     String?   @db.VarChar(255)
+  mime_type             String?   @db.VarChar(100)
+  file_size_bytes       Int?
+  width                 Int?
+  height                Int?
+  
+  // Image characteristics
+  aspect_ratio          Decimal?  @db.Decimal(5, 3)
+  dominant_color        String?   @db.VarChar(7)
+  
+  // Management
+  uploaded_by           String?   @db.Uuid
+  uploaded_at           DateTime? @default(now()) @db.Timestamptz(6)
+  last_accessed         DateTime? @db.Timestamptz(6)
+  access_count          Int       @default(0)
+  
+  // Validation and moderation
+  is_validated          Boolean   @default(false)
+  validation_status     String?   @db.VarChar(50) @default("pending")
+  validation_notes      String?
+  validated_by          String?   @db.Uuid
+  validated_at          DateTime? @db.Timestamptz(6)
+  
+  // Search and categorization
+  tags                  String[]
+  description           String?
+  
+  // Duplicate management
+  is_duplicate          Boolean   @default(false) // Marks if this is a duplicate of another image
+  original_image_id     String?   @db.Uuid
+  duplicate_reason      String?   // Why this duplicate exists (e.g., "represents manufacturer", "catalog display")
+  
+  // Self-referencing for duplicates
+  original_image        images? @relation("ImageDuplicates", fields: [original_image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  duplicate_images      images[] @relation("ImageDuplicates")
+  
+  // User relations
+  uploaded_by_user      users? @relation("ImagesUploadedBy", fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  validated_by_user     users? @relation("ImagesValidatedBy", fields: [validated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  // Image sources
+  image_sources         image_sources[]
+
+  @@index([entity_type, entity_id], map: "idx_images_entity")
+  @@index([image_type], map: "idx_images_type")
+  @@index([is_primary], map: "idx_images_primary")
+  @@index([validation_status], map: "idx_images_validation")
+  @@index([uploaded_by], map: "idx_images_uploaded_by")
+  @@index([uploaded_at], map: "idx_images_uploaded_at")
+  @@index([storage_key], map: "idx_images_storage_key")
+  @@index([original_image_id], map: "idx_images_duplicates")
+  @@index([tags], map: "idx_images_tags")
+}
+
+/// Image sources for attribution
+model image_sources {
+  id                String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  image_id          String    @db.Uuid
+  image             images    @relation(fields: [image_id], references: [id], onDelete: Cascade)
+  
+  // Source information
+  source_type       String    @db.VarChar(50)
+  source_name       String?   @db.VarChar(255)
+  source_url        String?
+  
+  // Attribution
+  copyright_holder  String?   @db.VarChar(255)
+  license_type      String?   @db.VarChar(50)
+  attribution_required Boolean @default(true)
+  attribution_text  String?
+  
+  // Legal and compliance
+  usage_rights      String?
+  expiration_date   DateTime? @db.Date
+  
+  // Reference to your existing data_sources table
+  data_source_id    String?   @db.Uuid
+  data_sources      data_sources? @relation(fields: [data_source_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([image_id], map: "idx_image_sources_image")
+  @@index([source_type], map: "idx_image_sources_type")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -265,6 +390,8 @@ model users {
   updated_at                                     DateTime?       @default(now()) @db.Timestamptz(6)
   contributions_contributions_reviewed_byTousers contributions[] @relation("contributions_reviewed_byTousers")
   contributions_contributions_user_idTousers     contributions[] @relation("contributions_user_idTousers")
+  images_uploaded_by                             images[]        @relation("ImagesUploadedBy")
+  images_validated_by                            images[]        @relation("ImagesValidatedBy")
 
   @@index([user_type], map: "idx_users_type")
 }
