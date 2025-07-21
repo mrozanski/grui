@@ -81,6 +81,16 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
     },
   })
 
+  // Get the primary image for this model
+  const primaryImage = await prisma.images.findFirst({
+    where: {
+      entity_type: 'model',
+      entity_id: id,
+      is_primary: true,
+    },
+    orderBy: { display_order: 'asc' }
+  })
+
   if (!model) {
     notFound()
   }
@@ -144,8 +154,8 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
         </div>
         
         <Image
-          src="/images/guitars/guitar-default.jpg"
-          alt="Guitar model placeholder"
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          alt={primaryImage?.caption || "Guitar model image X"}
           width={400}
           height={300}
         />

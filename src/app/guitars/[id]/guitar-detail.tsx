@@ -55,6 +55,16 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
     },
   })
 
+  // Get the primary image for this guitar
+  const primaryImage = await prisma.images.findFirst({
+    where: {
+      entity_type: 'individual_guitar',
+      entity_id: id,
+      is_primary: true,
+    },
+    orderBy: { display_order: 'asc' }
+  })
+
   if (!guitar) {
     notFound()
   }
@@ -155,8 +165,8 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
         </div>
         
         <Image
-          src="/images/guitars/guitar-default.jpg"
-          alt="Guitar placeholder"
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          alt={primaryImage?.caption || "Guitar image"}
           width={300}
           height={200}
           className="rounded-lg"
