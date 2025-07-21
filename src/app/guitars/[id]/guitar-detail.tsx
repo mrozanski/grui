@@ -6,63 +6,17 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Package, FileText, Guitar, DollarSign, Building, Calendar, Users, Star } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
+import { 
+  getGuitarDisplayName, 
+  getGuitarDisplayYear, 
+  getSignificanceColor, 
+  getConditionColor, 
+  formatCurrency, 
+  formatDate 
+} from "@/lib/guitar-utils"
 
 interface GuitarDetailProps {
   params: Promise<{ id: string }>
-}
-
-function getSignificanceColor(level: string | null) {
-  switch (level?.toLowerCase()) {
-    case 'legendary':
-      return 'bg-purple-100 text-purple-800'
-    case 'historic':
-      return 'bg-blue-100 text-blue-800'
-    case 'notable':
-      return 'bg-green-100 text-green-800'
-    case 'rare':
-      return 'bg-yellow-100 text-yellow-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function getConditionColor(condition: string | null) {
-  switch (condition?.toLowerCase()) {
-    case 'mint':
-      return 'bg-green-100 text-green-800'
-    case 'excellent':
-      return 'bg-blue-100 text-blue-800'
-    case 'very good':
-      return 'bg-yellow-100 text-yellow-800'
-    case 'good':
-      return 'bg-orange-100 text-orange-800'
-    case 'fair':
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function formatCurrency(amount: number | null | unknown) {
-  if (!amount) return null
-  
-  try {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(Number(amount))
-  } catch {
-    return `$${Number(amount).toLocaleString()}`
-  }
-}
-
-function formatDate(date: Date | null) {
-  if (!date) return null
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }).format(date)
 }
 
 export default async function GuitarDetail({ params }: GuitarDetailProps) {
@@ -101,17 +55,22 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
     },
   })
 
+  // Get the primary image for this guitar
+  const primaryImage = await prisma.images.findFirst({
+    where: {
+      entity_type: 'individual_guitar',
+      entity_id: id,
+      is_primary: true,
+    },
+    orderBy: { display_order: 'asc' }
+  })
+
   if (!guitar) {
     notFound()
   }
 
-  const displayName = guitar.models ? 
-    `${guitar.models.manufacturers?.name || 'Unknown'} ${guitar.models.name}` :
-    `${guitar.manufacturer_name_fallback || 'Unknown'} ${guitar.model_name_fallback || 'Model'}`
-
-  const displayYear = guitar.models ? 
-    guitar.models.year.toString() : 
-    guitar.year_estimate || 'Unknown'
+  const displayName = getGuitarDisplayName(guitar)
+  const displayYear = getGuitarDisplayYear(guitar)
 
   return (
     <div className="space-y-6">
@@ -206,8 +165,8 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
         </div>
         
         <Image
-          src="/images/guitars/guitar-default.jpg"
-          alt="Guitar placeholder"
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          alt={primaryImage?.caption || "Guitar image"}
           width={300}
           height={200}
           className="rounded-lg"
