@@ -69,10 +69,10 @@ export function ReviewCard({ review, onVerify, onEdit, showModels = true }: Revi
       </CardHeader>
       
       <CardContent>
-        <p className="text-gray-700 mb-4">{review.review_summary}</p>
+        <p className="text-foreground mb-4">{review.review_summary}</p>
         
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {review.content_archived && (
               <Badge variant="outline" className="text-xs">
                 📁 Archived
@@ -83,7 +83,7 @@ export function ReviewCard({ review, onVerify, onEdit, showModels = true }: Revi
                 href={review.original_content_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className="text-primary hover:underline"
               >
                 Original Source
               </a>

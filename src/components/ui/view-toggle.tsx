@@ -12,7 +12,7 @@ interface ViewToggleProps {
 
 export function ViewToggle({ currentView, onViewChange }: ViewToggleProps) {
   return (
-    <div className="flex rounded-lg border border-gray-200 bg-white p-1">
+    <div className="flex rounded-[4px] border border-border bg-card p-1">
       <Button
         variant={currentView === 'cards' ? 'default' : 'ghost'}
         size="sm"

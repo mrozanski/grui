@@ -151,10 +151,10 @@ export function CreateReviewModal({
         <form id="reviewForm" className="space-y-6 flex-1 overflow-y-auto pt-4">
           {/* Model Selection */}
           <div className="space-y-3">
-            <Label className={`text-base font-medium ${validationErrors.modelSelection ? 'text-red-600' : ''}`}>
+            <Label className={`text-base font-medium ${validationErrors.modelSelection ? 'text-destructive' : ''}`}>
               This review applies to: (select all that apply)
             </Label>
-            <div className={`grid gap-2 max-h-40 overflow-y-auto border rounded p-3 ${validationErrors.modelSelection ? 'border-red-300 bg-red-50' : ''}`}>
+            <div className={`grid gap-2 max-h-40 overflow-y-auto border rounded-[4px] p-3 ${validationErrors.modelSelection ? 'border-destructive bg-destructive/5' : ''}`}>
               {relatedModels.map(model => (
                 <div key={model.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -174,14 +174,14 @@ export function CreateReviewModal({
               ))}
             </div>
             {validationErrors.modelSelection && (
-              <p className="text-sm text-red-600">{validationErrors.modelSelection}</p>
+              <p className="text-sm text-destructive">{validationErrors.modelSelection}</p>
             )}
           </div>
 
           {/* Reviewer Information */}
           <div className="grid gap-4">
             <div>
-              <Label htmlFor="reviewerName" className={validationErrors.reviewerName ? 'text-red-600' : ''}>
+              <Label htmlFor="reviewerName" className={validationErrors.reviewerName ? 'text-destructive' : ''}>
                 Reviewer Name *
               </Label>
               <Input 
@@ -189,11 +189,11 @@ export function CreateReviewModal({
                 name="reviewerName" 
                 required 
                 placeholder="e.g., Trogly's Guitar Show"
-                className={validationErrors.reviewerName ? 'border-red-300 bg-red-50' : ''}
+                className={validationErrors.reviewerName ? 'border-destructive bg-destructive/5' : ''}
                 onChange={() => handleInputChange('reviewerName')}
               />
               {validationErrors.reviewerName && (
-                <p className="text-sm text-red-600">{validationErrors.reviewerName}</p>
+                <p className="text-sm text-destructive">{validationErrors.reviewerName}</p>
               )}
             </div>
             <div>
@@ -209,7 +209,7 @@ export function CreateReviewModal({
           {/* Review Content */}
           <div className="grid gap-4">
             <div>
-              <Label htmlFor="reviewTitle" className={validationErrors.reviewTitle ? 'text-red-600' : ''}>
+              <Label htmlFor="reviewTitle" className={validationErrors.reviewTitle ? 'text-destructive' : ''}>
                 Review Title *
               </Label>
               <Input 
@@ -217,15 +217,15 @@ export function CreateReviewModal({
                 name="reviewTitle" 
                 required 
                 placeholder="e.g., Classic Vibe Stratocaster - Great Value Guitar"
-                className={validationErrors.reviewTitle ? 'border-red-300 bg-red-50' : ''}
+                className={validationErrors.reviewTitle ? 'border-destructive bg-destructive/5' : ''}
                 onChange={() => handleInputChange('reviewTitle')}
               />
               {validationErrors.reviewTitle && (
-                <p className="text-sm text-red-600">{validationErrors.reviewTitle}</p>
+                <p className="text-sm text-destructive">{validationErrors.reviewTitle}</p>
               )}
             </div>
             <div>
-              <Label htmlFor="reviewSummary" className={validationErrors.reviewSummary ? 'text-red-600' : ''}>
+              <Label htmlFor="reviewSummary" className={validationErrors.reviewSummary ? 'text-destructive' : ''}>
                 Review Summary *
               </Label>
               <Textarea 
@@ -234,11 +234,11 @@ export function CreateReviewModal({
                 required
                 rows={4}
                 placeholder="Detailed review content..."
-                className={validationErrors.reviewSummary ? 'border-red-300 bg-red-50' : ''}
+                className={validationErrors.reviewSummary ? 'border-destructive bg-destructive/5' : ''}
                 onChange={() => handleInputChange('reviewSummary')}
               />
               {validationErrors.reviewSummary && (
-                <p className="text-sm text-red-600">{validationErrors.reviewSummary}</p>
+                <p className="text-sm text-destructive">{validationErrors.reviewSummary}</p>
               )}
             </div>
             <div>
@@ -297,7 +297,7 @@ export function CreateReviewModal({
           </div>
 
           <div>
-            <Label htmlFor="reviewDate" className={validationErrors.reviewDate ? 'text-red-600' : ''}>
+            <Label htmlFor="reviewDate" className={validationErrors.reviewDate ? 'text-destructive' : ''}>
               Review Date *
             </Label>
             <Input 
@@ -305,11 +305,11 @@ export function CreateReviewModal({
               name="reviewDate" 
               type="date" 
               required
-              className={validationErrors.reviewDate ? 'border-red-300 bg-red-50' : ''}
+              className={validationErrors.reviewDate ? 'border-destructive bg-destructive/5' : ''}
               onChange={() => handleInputChange('reviewDate')}
             />
             {validationErrors.reviewDate && (
-              <p className="text-sm text-red-600">{validationErrors.reviewDate}</p>
+              <p className="text-sm text-destructive">{validationErrors.reviewDate}</p>
             )}
           </div>
         </form>
@@ -348,10 +348,10 @@ export function CreateReviewModal({
           
           {/* Error Messages */}
           {Object.keys(validationErrors).length > 0 && (
-            <p className="text-sm text-red-600">Please enter all the required values</p>
+            <p className="text-sm text-destructive">Please enter all the required values</p>
           )}
           {submitError && (
-            <p className="text-sm text-red-600">{submitError}</p>
+            <p className="text-sm text-destructive">{submitError}</p>
           )}
         </div>
       </DialogContent>

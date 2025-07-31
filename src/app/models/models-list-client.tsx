@@ -35,15 +35,15 @@ interface ModelsListProps {
 function getProductionTypeColor(type: string | null) {
   switch (type?.toLowerCase()) {
     case 'mass':
-      return 'bg-green-100 text-green-800 hover:bg-green-200'
+      return 'bg-success text-white'
     case 'limited':
-      return 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+      return 'bg-info text-white'
     case 'custom':
-      return 'bg-purple-100 text-purple-800 hover:bg-purple-200'
+      return 'bg-primary text-white'
     case 'prototype':
-      return 'bg-orange-100 text-orange-800 hover:bg-orange-200'
+      return 'bg-warning text-white'
     default:
-      return 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+      return 'bg-muted text-muted-foreground'
   }
 }
 
@@ -75,8 +75,8 @@ export function ModelsListClient({ models }: ModelsListProps) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-light text-gray-900">Guitar Models</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="text-3xl font-light text-foreground">Guitar Models</h1>
+            <p className="mt-2 text-muted-foreground">
               Explore guitar models from various manufacturers
             </p>
           </div>
@@ -91,8 +91,8 @@ export function ModelsListClient({ models }: ModelsListProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-light text-gray-900">Guitar Models</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-light text-foreground">Guitar Models</h1>
+          <p className="mt-2 text-muted-foreground">
             Explore guitar models from various manufacturers
           </p>
         </div>
@@ -107,7 +107,7 @@ export function ModelsListClient({ models }: ModelsListProps) {
           fields={listFields}
           getHref={(item) => `/models/${item.id}`}
           emptyMessage="No models found."
-          emptyIcon={<Guitar className="h-12 w-12 text-gray-400 mx-auto" />}
+          emptyIcon={<Guitar className="h-12 w-12 text-muted-foreground mx-auto" />}
         />
       )}
     </div>

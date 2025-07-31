@@ -24,7 +24,7 @@ export function ListView({
     return (
       <div className="text-center py-12">
         {emptyIcon && <div className="mb-4">{emptyIcon}</div>}
-        <p className="text-gray-500">{emptyMessage}</p>
+        <p className="text-muted-foreground">{emptyMessage}</p>
       </div>
     )
   }
@@ -33,11 +33,11 @@ export function ListView({
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-gray-200">
+          <tr className="border-b border-border">
             {fields.map((field) => (
               <th
                 key={field.key}
-                className="px-4 py-3 text-left text-sm font-medium text-gray-900"
+                className="px-4 py-3 text-left text-sm font-medium text-foreground"
               >
                 {field.label}
               </th>
@@ -48,19 +48,19 @@ export function ListView({
           {data.map((item) => (
             <tr
               key={item.id}
-              className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              className="border-b border-border hover:bg-muted/50 transition-colors"
             >
               {fields.map((field, index) => (
                 <td key={field.key} className="px-4 py-4 text-sm">
                   {index === 0 ? (
                     <Link
                       href={getHref(item)}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
+                      className="text-primary hover:text-primary/80 font-medium"
                     >
                       {field.render ? field.render(item) : item[field.key]}
                     </Link>
                   ) : (
-                    <span className="text-gray-900">
+                    <span className="text-foreground">
                       {field.render ? field.render(item) : item[field.key]}
                     </span>
                   )}

@@ -41,13 +41,13 @@ export function ManufacturersListClient({ manufacturers }: ManufacturersListProp
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800'
+        return 'bg-success text-white'
       case 'defunct':
-        return 'bg-red-100 text-red-800'
+        return 'bg-error text-white'
       case 'acquired':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-warning text-white'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-muted-foreground'
     }
   }
 
@@ -73,8 +73,8 @@ export function ManufacturersListClient({ manufacturers }: ManufacturersListProp
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-light text-gray-900">Guitar Manufacturers</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="text-3xl font-light text-foreground">Guitar Manufacturers</h1>
+            <p className="mt-2 text-muted-foreground">
               Explore the companies that have shaped the electric guitar industry
             </p>
           </div>
@@ -89,8 +89,8 @@ export function ManufacturersListClient({ manufacturers }: ManufacturersListProp
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-light text-gray-900">Guitar Manufacturers</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-light text-foreground">Guitar Manufacturers</h1>
+          <p className="mt-2 text-muted-foreground">
             Explore the companies that have shaped the electric guitar industry
           </p>
         </div>
@@ -105,7 +105,7 @@ export function ManufacturersListClient({ manufacturers }: ManufacturersListProp
           fields={listFields}
           getHref={(item) => `/manufacturers/${item.id}`}
           emptyMessage="No manufacturers found."
-          emptyIcon={<Factory className="h-12 w-12 text-gray-400 mx-auto" />}
+          emptyIcon={<Factory className="h-12 w-12 text-muted-foreground mx-auto" />}
         />
       )}
     </div>
