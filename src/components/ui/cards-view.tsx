@@ -39,20 +39,20 @@ export function ManufacturerCardsView({ manufacturers }: ManufacturerCardsViewPr
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800'
+        return 'bg-success text-white'
       case 'defunct':
-        return 'bg-red-100 text-red-800'
+        return 'bg-error text-white'
       case 'acquired':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-warning text-white'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted text-muted-foreground'
     }
   }
 
   if (manufacturers.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">No manufacturers found.</p>
+        <p className="text-muted-foreground">No manufacturers found.</p>
       </div>
     )
   }
@@ -61,7 +61,7 @@ export function ManufacturerCardsView({ manufacturers }: ManufacturerCardsViewPr
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {manufacturers.map((manufacturer) => (
         <Link key={manufacturer.id} href={`/manufacturers/${manufacturer.id}`}>
-          <Card className="h-full transition-shadow hover:shadow-lg">
+          <Card className="h-full transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1 space-y-2">
@@ -82,7 +82,7 @@ export function ManufacturerCardsView({ manufacturers }: ManufacturerCardsViewPr
                     </div>
                   )}
                   {/* {manufacturer.website && (
-                    <ExternalLink className="h-4 w-4 text-gray-400" />
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
                   )} */}
                 </div>
               </div>
@@ -105,21 +105,21 @@ export function ManufacturerCardsView({ manufacturers }: ManufacturerCardsViewPr
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-foreground">
                       {manufacturer._count.models}
                     </p>
-                    <p className="text-gray-500">Models</p>
+                    <p className="text-muted-foreground">Models</p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-foreground">
                       {manufacturer._count.product_lines}
                     </p>
-                    <p className="text-gray-500">Product Lines</p>
+                    <p className="text-muted-foreground">Product Lines</p>
                   </div>
                 </div>
                 
                 {manufacturer.notes && (
-                  <p className="text-sm text-gray-600 line-clamp-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
                     {manufacturer.notes}
                   </p>
                 )}
@@ -160,15 +160,15 @@ interface ModelCardsViewProps {
 function getProductionTypeColor(type: string | null) {
   switch (type?.toLowerCase()) {
     case 'mass':
-      return 'bg-green-100 text-green-800 hover:bg-green-200'
+      return 'bg-success text-white'
     case 'limited':
-      return 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+      return 'bg-info text-white'
     case 'custom':
-      return 'bg-purple-100 text-purple-800 hover:bg-purple-200'
+      return 'bg-primary text-white'
     case 'prototype':
-      return 'bg-orange-100 text-orange-800 hover:bg-orange-200'
+      return 'bg-warning text-white'
     default:
-      return 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+      return 'bg-muted text-muted-foreground'
   }
 }
 
@@ -189,8 +189,8 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
   if (models.length === 0) {
     return (
       <div className="text-center py-12">
-        <Guitar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-500">No models found.</p>
+        <Guitar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <p className="text-muted-foreground">No models found.</p>
       </div>
     )
   }
@@ -199,7 +199,7 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {models.map((model) => (
         <Link key={model.id} href={`/models/${model.id}`}>
-          <Card className="h-full transition-shadow hover:shadow-lg cursor-pointer">
+          <Card className="h-full transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
@@ -208,7 +208,7 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
                     {model.production_type || 'unknown'}
                   </Badge>
                 </div>
-                <Guitar className="h-5 w-5 text-gray-400" />
+                <Guitar className="h-5 w-5 text-muted-foreground" />
               </div>
               <CardDescription>
                 <div className="space-y-1">
@@ -225,7 +225,7 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
                   {model.msrp_original && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Original MSRP:</span>
-                      <span className="text-green-600 font-medium">
+                      <span className="text-success font-medium">
                         {formatCurrency(model.msrp_original, model.currency)}
                       </span>
                     </div>
@@ -235,12 +235,12 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
             </CardHeader>
             <CardContent>
               {model.description && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                   {model.description}
                 </p>
               )}
               
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
                     <Guitar className="h-4 w-4" />
@@ -305,8 +305,8 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
   if (guitars.length === 0) {
     return (
       <div className="text-center py-12">
-        <Guitar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-500">No guitars found.</p>
+        <Guitar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <p className="text-muted-foreground">No guitars found.</p>
       </div>
     )
   }
@@ -315,7 +315,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {guitars.map((guitar) => (
         <Link key={guitar.id} href={`/guitars/${guitar.id}`}>
-          <Card className="h-full transition-shadow hover:shadow-lg cursor-pointer">
+          <Card className="h-full transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
@@ -333,7 +333,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
                     )}
                   </div>
                 </div>
-                <Guitar className="h-5 w-5 text-gray-400" />
+                <Guitar className="h-5 w-5 text-muted-foreground" />
               </div>
               <CardDescription>
                 <div className="space-y-1">
@@ -354,7 +354,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
                   {guitar.current_estimated_value && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Est. Value:</span>
-                      <span className="text-green-600 font-medium">
+                      <span className="text-success font-medium">
                         {formatCurrencyGuitar(guitar.current_estimated_value)}
                       </span>
                     </div>
@@ -364,12 +364,12 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
             </CardHeader>
             <CardContent>
               {guitar.description && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                   {guitar.description}
                 </p>
               )}
               
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
                     <Users className="h-4 w-4" />

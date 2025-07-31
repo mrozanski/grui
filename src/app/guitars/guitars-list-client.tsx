@@ -104,8 +104,8 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-light text-gray-900">Individual Guitars</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="text-3xl font-light text-foreground">Individual Guitars</h1>
+            <p className="mt-2 text-muted-foreground">
               Registry of specific guitar instruments and their provenance
             </p>
           </div>
@@ -120,8 +120,8 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-light text-gray-900">Individual Guitars</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-light text-foreground">Individual Guitars</h1>
+          <p className="mt-2 text-muted-foreground">
             Registry of specific guitar instruments and their provenance
           </p>
         </div>
@@ -136,7 +136,7 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
           fields={listFields}
           getHref={(item) => `/guitars/${item.id}`}
           emptyMessage="No guitars found."
-          emptyIcon={<Guitar className="h-12 w-12 text-gray-400 mx-auto" />}
+          emptyIcon={<Guitar className="h-12 w-12 text-muted-foreground mx-auto" />}
         />
       )}
     </div>

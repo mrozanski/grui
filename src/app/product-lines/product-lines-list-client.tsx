@@ -43,8 +43,8 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
   })
 
   const getStatusColor = (introduced: number | null, discontinued: number | null) => {
-    if (!discontinued) return 'bg-green-100 text-green-800' // Active
-    return 'bg-red-100 text-red-800' // Discontinued
+    if (!discontinued) return 'bg-success text-white' // Active
+    return 'bg-error text-white' // Discontinued
   }
 
   const getStatusText = (introduced: number | null, discontinued: number | null) => {
@@ -65,8 +65,8 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Product Lines</h1>
-            <p className="mt-2 text-gray-600">Loading...</p>
+            <h1 className="text-3xl font-bold text-foreground">Product Lines</h1>
+            <p className="mt-2 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </div>
@@ -87,28 +87,28 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
                 src={productLine.image.small_url || productLine.image.thumbnail_url || productLine.image.original_url}
                 alt={productLine.image.caption || `${productLine.name} image`}
                 fill
-                className="object-cover rounded-md"
+                className="object-cover rounded-[4px]"
               />
             </div>
           ) : (
-            <Package className="h-10 w-10 text-gray-400 flex-shrink-0" />
+            <Package className="h-10 w-10 text-muted-foreground flex-shrink-0" />
           )}
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-medium text-gray-900">{productLine.name}</h3>
+              <h3 className="font-medium text-foreground">{productLine.name}</h3>
               <Badge className={getStatusColor(productLine.introduced_year, productLine.discontinued_year)}>
                 {getStatusText(productLine.introduced_year, productLine.discontinued_year)}
               </Badge>
             </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {productLine.manufacturers?.name || 'Unknown Manufacturer'}
             {productLine.manufacturers?.country && ` • ${productLine.manufacturers.country}`}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {getProductionYears(productLine.introduced_year, productLine.discontinued_year)} • {productLine._count.models} model{productLine._count.models !== 1 ? 's' : ''}
           </p>
           {productLine.description && (
-            <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
               {productLine.description}
             </p>
           )}
@@ -123,7 +123,7 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
     href: `/product-lines/${productLine.id}`,
     content: (
       <Link key={productLine.id} href={`/product-lines/${productLine.id}`}>
-        <Card className="transition-shadow hover:shadow-lg h-full">
+        <Card className="transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] h-full">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -133,11 +133,11 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
                       src={productLine.image.small_url || productLine.image.thumbnail_url || productLine.image.original_url}
                       alt={productLine.image.caption || `${productLine.name} image`}
                       fill
-                      className="object-cover rounded-md"
+                      className="object-cover rounded-[4px]"
                     />
                   </div>
                 ) : (
-                  <Package className="h-12 w-12 text-gray-400 flex-shrink-0" />
+                  <Package className="h-12 w-12 text-muted-foreground flex-shrink-0" />
                 )}
                 <div className="flex-1">
                   <CardTitle className="text-lg">{productLine.name}</CardTitle>
@@ -154,14 +154,14 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {getProductionYears(productLine.introduced_year, productLine.discontinued_year)}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {productLine._count.models} model{productLine._count.models !== 1 ? 's' : ''}
               </p>
               {productLine.description && (
-                <p className="text-sm text-gray-600 line-clamp-3 mt-2">
+                <p className="text-sm text-muted-foreground line-clamp-3 mt-2">
                   {productLine.description}
                 </p>
               )}
@@ -176,8 +176,8 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Product Lines</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground">Product Lines</h1>
+          <p className="mt-2 text-muted-foreground">
             {productLines.length} product line{productLines.length !== 1 ? 's' : ''} found
           </p>
         </div>
