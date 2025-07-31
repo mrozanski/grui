@@ -4,7 +4,7 @@ import { Navbar } from "./navbar"
 
 export function Header() {
   return (
-    <header className="border-b border-border bg-surface px-6 pt-4 pb-2">
+    <header className="border-b border-border bg-surface px-6 pt-4 pb-2 relative">
       <div className="flex flex-col items-center justify-center">
         <div>
           <h1 className="text-3xl font-brand text-[var(--brand-color)] text-center">
@@ -14,7 +14,9 @@ export function Header() {
             The Lore Of The Strings
           </p>
         </div>
-        <Navbar />
+        <div className="w-full flex justify-center">
+          <Navbar />
+        </div>
       </div>
     </header>
   )
