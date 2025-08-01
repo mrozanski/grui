@@ -21,8 +21,7 @@ const navigation = [
   { name: "Product Lines", href: "/product-lines", icon: Package },
   { name: "Models", href: "/models", icon: FileText },
   { name: "Individual Guitars", href: "/guitars", icon: Guitar },
-  { name: "Notable Associations", href: "/associations", icon: Users },
-  { name: "Market Valuations", href: "/valuations", icon: TrendingUp },
+  { name: "Create Attestation", href: "/create-review-demo?open=true", icon: TrendingUp },
 ]
 
 export function Navbar() {
