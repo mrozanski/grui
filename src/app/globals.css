@@ -248,3 +248,27 @@
     font-family: var(--font-jetbrains-mono);
   }
 }
+
+/* Header background image - mobile first */
+.header-bg-image {
+  background-image: none;
+}
+
+/* Show background images on larger screens */
+@media (min-width: 768px) {
+  .header-bg-image {
+    background-image: 
+      url("/images/les-templ.png"),
+      url("/images/strat-neck.png");
+    background-position: 
+      left center,
+      top right;
+    background-repeat: no-repeat;
+    background-size: auto;
+  }
+}
+
+/* Header title line height */
+.header-title {
+  line-height: 1;
+}
