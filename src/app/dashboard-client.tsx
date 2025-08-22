@@ -89,8 +89,8 @@ export function DashboardClient({ data }: DashboardClientProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="mt-2 text-muted-foreground">
           Overview of the guitar registry database
         </p>
       </div>
@@ -99,7 +99,7 @@ export function DashboardClient({ data }: DashboardClientProps) {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {statsConfig.map((stat) => (
           <Link key={stat.title} href={stat.href}>
-            <Card className="transition-shadow hover:shadow-lg">
+            <Card className="transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   {stat.title}
@@ -132,11 +132,11 @@ export function DashboardClient({ data }: DashboardClientProps) {
                 <Link
                   key={manufacturer.id}
                   href={`/manufacturers/${manufacturer.id}`}
-                  className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50"
+                  className="flex items-center justify-between p-2 rounded-[4px] hover:bg-muted/50"
                 >
                   <div>
                     <p className="font-medium">{manufacturer.name}</p>
-                    <p className="text-sm text-gray-500">{manufacturer.country}</p>
+                    <p className="text-sm text-muted-foreground">{manufacturer.country}</p>
                   </div>
                   <Badge className={getStatusColor(manufacturer.status)}>
                     {manufacturer.status || 'unknown'}
@@ -161,13 +161,13 @@ export function DashboardClient({ data }: DashboardClientProps) {
                 <Link
                   key={guitar.id}
                   href={`/guitars/${guitar.id}`}
-                  className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50"
+                  className="flex items-center justify-between p-2 rounded-[4px] hover:bg-muted/50"
                 >
                   <div>
                     <p className="font-medium">
                       {getGuitarDisplayName(guitar)}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {guitar.serial_number ? `S/N: ${guitar.serial_number}` : 'No serial number'}
                     </p>
                   </div>
@@ -187,12 +187,12 @@ export function DashboardClient({ data }: DashboardClientProps) {
 function getStatusColor(status: string | null) {
   switch (status) {
     case 'active':
-      return 'bg-green-100 text-green-800'
+      return 'bg-success text-white'
     case 'defunct':
-      return 'bg-red-100 text-red-800'
+      return 'bg-error text-white'
     case 'acquired':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-warning text-white'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-muted-foreground'
   }
 }

@@ -228,25 +228,26 @@ model market_valuations {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model models {
-  id                            String               @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
-  manufacturer_id               String?              @db.Uuid
-  product_line_id               String?              @db.Uuid
-  name                          String               @db.VarChar(150)
+  id                            String                      @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  manufacturer_id               String?                     @db.Uuid
+  product_line_id               String?                     @db.Uuid
+  name                          String                      @db.VarChar(150)
   year                          Int
-  production_type               String?              @default("mass") @db.VarChar(20)
-  production_start_date         DateTime?            @db.Date
-  production_end_date           DateTime?            @db.Date
+  production_type               String?                     @default("mass") @db.VarChar(20)
+  production_start_date         DateTime?                   @db.Date
+  production_end_date           DateTime?                   @db.Date
   estimated_production_quantity Int?
-  msrp_original                 Decimal?             @db.Decimal(10, 2)
-  currency                      String?              @default("USD") @db.VarChar(3)
+  msrp_original                 Decimal?                    @db.Decimal(10, 2)
+  currency                      String?                     @default("USD") @db.VarChar(3)
   description                   String?
-  created_at                    DateTime?            @default(now()) @db.Timestamptz(6)
-  updated_at                    DateTime?            @default(now()) @db.Timestamptz(6)
+  created_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
+  updated_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
   finishes                      finishes[]
   individual_guitars            individual_guitars[]
   market_valuations             market_valuations[]
-  manufacturers                 manufacturers?       @relation(fields: [manufacturer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  product_lines                 product_lines?       @relation(fields: [product_line_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  manufacturers                 manufacturers?              @relation(fields: [manufacturer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product_lines                 product_lines?              @relation(fields: [product_line_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  review_model_associations     review_model_associations[]
   specifications                specifications[]
 
   @@unique([manufacturer_id, name, year])
@@ -258,23 +259,35 @@ model models {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model notable_associations {
-  id                   String              @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
-  individual_guitar_id String?             @db.Uuid
-  person_name          String              @db.VarChar(100)
-  association_type     String?             @db.VarChar(50)
-  period_start         DateTime?           @db.Date
-  period_end           DateTime?           @db.Date
-  notable_songs        String?
-  notable_performances String?
-  verification_status  String?             @default("unverified") @db.VarChar(20)
-  verification_source  String?
-  created_at           DateTime?           @default(now()) @db.Timestamptz(6)
-  updated_at           DateTime?           @default(now()) @db.Timestamptz(6)
-  individual_guitars   individual_guitars? @relation(fields: [individual_guitar_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                    String              @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  individual_guitar_id  String?             @db.Uuid
+  person_name           String              @db.VarChar(100)
+  association_type      String?             @db.VarChar(50)
+  period_start          DateTime?           @db.Date
+  period_end            DateTime?           @db.Date
+  notable_songs         String?
+  notable_performances  String?
+  verification_status   String?             @default("unverified") @db.VarChar(20)
+  verification_source   String?
+  event_type            String?             @default("ownership") @db.VarChar(50)
+  event_title           String?             @db.VarChar(200)
+  event_description     String?
+  event_date            DateTime?           @db.Date
+  venue_name            String?             @db.VarChar(200)
+  recording_title       String?             @db.VarChar(200)
+  evidence_url          String?             @db.VarChar(500)
+  evidence_hash         String?             @db.VarChar(64)
+  attestation_uid       String?             @db.VarChar(66)
+  attestor_name         String?             @db.VarChar(100)
+  attestor_relationship String?             @db.VarChar(50)
+  created_at            DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?           @default(now()) @db.Timestamptz(6)
+  individual_guitars    individual_guitars? @relation(fields: [individual_guitar_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([individual_guitar_id], map: "idx_notable_associations_guitar")
   @@index([association_type], map: "idx_notable_associations_type")
   @@index([verification_status], map: "idx_notable_associations_verification")
+  @@index([event_type], map: "idx_notable_associations_event_type")
 }
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
@@ -344,4 +357,45 @@ model users {
   images_validated_by                            images[]        @relation("ImagesValidatedBy")
 
   @@index([user_type], map: "idx_users_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model expert_reviews {
+  id                        String                      @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  reviewer_name             String                      @db.VarChar(100)
+  reviewer_credentials      String?
+  review_title              String                      @db.VarChar(200)
+  review_summary            String
+  content_type              String?                     @default("review") @db.VarChar(50)
+  condition_rating          Int?
+  build_quality_rating      Int?
+  value_rating              Int?
+  overall_rating            Int?
+  original_content_url      String?                     @db.VarChar(500)
+  content_archived          Boolean?                    @default(false)
+  content_hash              String?                     @db.VarChar(64)
+  attestation_uid           String?                     @db.VarChar(66)
+  verification_status       String?                     @default("pending") @db.VarChar(20)
+  review_date               DateTime                    @db.Date
+  created_at                DateTime?                   @default(now()) @db.Timestamptz(6)
+  updated_at                DateTime?                   @default(now()) @db.Timestamptz(6)
+  review_model_associations review_model_associations[]
+
+  @@index([review_date], map: "idx_expert_reviews_date")
+  @@index([reviewer_name], map: "idx_expert_reviews_reviewer")
+  @@index([content_type], map: "idx_expert_reviews_type")
+  @@index([verification_status], map: "idx_expert_reviews_verification")
+}
+
+model review_model_associations {
+  id             String          @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  review_id      String?         @db.Uuid
+  model_id       String?         @db.Uuid
+  created_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  models         models?         @relation(fields: [model_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  expert_reviews expert_reviews? @relation(fields: [review_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([review_id, model_id])
+  @@index([model_id], map: "idx_review_model_associations_model")
+  @@index([review_id], map: "idx_review_model_associations_review")
 }

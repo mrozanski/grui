@@ -1,17 +1,31 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Inter, Stardos_Stencil, JetBrains_Mono, Manrope } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const stardosStencil = Stardos_Stencil({
+  variable: "--font-stardos-stencil",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Guitar Registry",
+  title: "Electric Guitar Registry",
   description: "Electric guitar provenance and authentication system",
 };
 
@@ -23,17 +37,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${stardosStencil.variable} ${jetbrainsMono.variable} ${manrope.variable} antialiased`}
       >
-        <div className="flex h-screen bg-gray-100">
-          <Sidebar />
           <div className="flex flex-1 flex-col overflow-hidden">
             <Header />
-            <main className="flex-1 overflow-auto bg-surface p-6">
+            <main className="flex-1 overflow-auto bg-surface p-6 max-w-7xl mx-auto w-full">
               {children}
             </main>
           </div>
-        </div>
       </body>
     </html>
   );
