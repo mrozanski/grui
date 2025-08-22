@@ -11,6 +11,7 @@ async function getModels() {
       msrp_original: true,
       currency: true,
       description: true,
+      updated_at: true,
       manufacturers: {
         select: {
           id: true,
