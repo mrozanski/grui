@@ -15,7 +15,6 @@ A comprehensive digital registry for electric guitars, featuring detailed catalo
 - **Specifications Database**: Comprehensive technical specifications for models and individual instruments
 
 ### Advanced Features
-- **Notable Associations**: Track historical connections between guitars and notable musicians/events
 - **Expert Reviews**: Professional reviews and assessments linked to multiple models
 - **Attestations System**: Verification and credibility system for historical claims (in development)
 - **Image Management**: Comprehensive image storage with metadata and attribution
@@ -108,16 +107,6 @@ A comprehensive digital registry for electric guitars, featuring detailed catalo
 6. **Open your browser**
    
    Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
-
-### Available Scripts
-
-- `npm run dev` - Start development server with Turbopack
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run db:generate` - Generate Prisma client
-- `npm run db:push` - Push schema changes to database
-- `npm run db:seed` - Seed database with sample data
 
 ## Database Management
 
