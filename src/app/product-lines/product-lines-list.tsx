@@ -10,6 +10,7 @@ async function getProductLines() {
         description: true,
         introduced_year: true,
         discontinued_year: true,
+        updated_at: true,
         manufacturers: {
           select: {
             id: true,

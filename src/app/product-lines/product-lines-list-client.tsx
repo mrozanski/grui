@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Package } from "lucide-react"
-import { ListView } from "@/components/ui/list-view"
+import { SortableListView } from "@/components/ui/sortable-list-view"
 import { ViewToggle } from "@/components/ui/view-toggle"
 import { useViewPreference } from "@/hooks/use-view-preference"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,6 +16,7 @@ interface ProductLinesListProps {
     description: string | null
     introduced_year: number | null
     discontinued_year: number | null
+    updated_at: Date | null
     manufacturers: {
       id: string
       name: string
@@ -185,12 +186,13 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
       </div>
 
       {currentView === 'list' ? (
-        <ListView 
+        <SortableListView 
           data={productLines}
           fields={[
             { key: 'name', label: 'Name' },
             { key: 'manufacturer', label: 'Manufacturer', render: (item) => item.manufacturers?.name || 'Unknown' },
-            { key: 'period', label: 'Period', render: (item) => getProductionYears(item.introduced_year, item.discontinued_year) },
+            { key: 'introduced_year', label: 'First year', render: (item) => item.introduced_year || 'Unknown' },
+            { key: 'updated_at', label: 'Updated at', render: (item) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown' },
             { key: 'models', label: 'Models', render: (item) => `${item._count.models} model${item._count.models !== 1 ? 's' : ''}` }
           ]}
           getHref={(item) => `/product-lines/${item.id}`}
