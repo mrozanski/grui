@@ -66,7 +66,7 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
         take: 10,
         include: {
           _count: {
-            select: { notable_associations: true },
+    
           },
         },
       },
@@ -366,11 +366,7 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
                       </div>
                       <div className="text-sm text-gray-600">
                         {guitar.production_date ? formatDate(guitar.production_date) : 'Unknown date'}
-                        {guitar._count.notable_associations > 0 && (
-                          <span className="ml-2 text-blue-600">
-                            • {guitar._count.notable_associations} notable association{guitar._count.notable_associations !== 1 ? 's' : ''}
-                          </span>
-                        )}
+
                       </div>
                     </div>
                     <Button variant="ghost" size="sm" asChild>

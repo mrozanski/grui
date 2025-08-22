@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Package, FileText, Guitar, DollarSign, Building, Calendar, Users, Star } from "lucide-react"
+import { ArrowLeft, Package, FileText, Guitar, DollarSign, Building, Calendar } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
 import { 
@@ -36,17 +36,13 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
       finishes: {
         orderBy: { finish_name: 'asc' }
       },
-      notable_associations: {
-        orderBy: { period_start: 'desc' },
-        take: 10
-      },
+
       market_valuations: {
         orderBy: { valuation_date: 'desc' },
         take: 5
       },
       _count: {
         select: {
-          notable_associations: true,
           market_valuations: true,
           specifications: true,
           finishes: true,
@@ -177,16 +173,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Notable Associations</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{guitar._count.notable_associations}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Market Valuations</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -298,52 +284,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
 
       {/* Content sections */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Notable Associations */}
-        {guitar.notable_associations.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Notable Associations ({guitar._count.notable_associations})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {guitar.notable_associations.map((association) => (
-                  <div key={association.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="space-y-1">
-                      <div className="font-medium">{association.person_name}</div>
-                      <div className="text-sm text-gray-600">
-                        {association.association_type && (
-                          <span className="capitalize">{association.association_type}</span>
-                        )}
-                        {association.period_start && (
-                          <span className="ml-2">
-                            • {formatDate(association.period_start)}
-                            {association.period_end && ` - ${formatDate(association.period_end)}`}
-                          </span>
-                        )}
-                      </div>
-                      {association.notable_songs && (
-                        <div className="text-xs text-gray-500">Songs: {association.notable_songs}</div>
-                      )}
-                      {association.notable_performances && (
-                        <div className="text-xs text-gray-500">Performances: {association.notable_performances}</div>
-                      )}
-                    </div>
-                    <Star className="h-4 w-4 text-yellow-500" />
-                  </div>
-                ))}
-                {guitar._count.notable_associations > 10 && (
-                  <p className="text-sm text-gray-500 pt-2">
-                    And {guitar._count.notable_associations - 10} more associations...
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Market Valuations */}
         {guitar.market_valuations.length > 0 && (
           <Card>

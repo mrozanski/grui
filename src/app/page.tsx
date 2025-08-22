@@ -7,7 +7,6 @@ async function getData() {
     productLinesCount,
     modelsCount,
     guitarsCount,
-    associationsCount,
     recentManufacturers,
     recentGuitars,
   ] = await Promise.all([
@@ -15,7 +14,7 @@ async function getData() {
     prisma.product_lines.count(),
     prisma.models.count(),
     prisma.individual_guitars.count(),
-    prisma.notable_associations.count(),
+
     prisma.manufacturers.findMany({
       take: 5,
       orderBy: { created_at: 'desc' },
@@ -57,7 +56,7 @@ async function getData() {
       productLinesCount,
       modelsCount,
       guitarsCount,
-      associationsCount,
+
     },
     recentManufacturers,
     recentGuitars,

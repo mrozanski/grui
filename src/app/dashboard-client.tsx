@@ -35,7 +35,7 @@ interface DashboardData {
     productLinesCount: number
     modelsCount: number
     guitarsCount: number
-    associationsCount: number
+  
   }
   recentManufacturers: Manufacturer[]
   recentGuitars: Guitar[]
@@ -77,13 +77,7 @@ export function DashboardClient({ data }: DashboardClientProps) {
       href: "/guitars", 
       description: "Specific instruments tracked",
     },
-    {
-      title: "Notable Associations",
-      value: stats.associationsCount.toLocaleString(),
-      icon: Users,
-      href: "/associations",
-      description: "Famous players and owners",
-    },
+
   ]
 
   return (
