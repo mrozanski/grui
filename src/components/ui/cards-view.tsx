@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, Users, DollarSign } from "lucide-react"
+import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, DollarSign } from "lucide-react"
 import { 
   getGuitarDisplayName, 
   getGuitarDisplayYear, 
@@ -287,7 +287,6 @@ interface GuitarCardsViewProps {
       } | null
     } | null
     _count: {
-      notable_associations: number
       market_valuations: number
     }
   }>
@@ -371,10 +370,7 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
               
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    <span>{guitar._count.notable_associations} associations</span>
-                  </div>
+
                   <div className="flex items-center gap-1">
                     <DollarSign className="h-4 w-4" />
                     <span>{guitar._count.market_valuations} valuations</span>

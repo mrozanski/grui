@@ -29,7 +29,7 @@ async function getGuitars() {
       },
       _count: {
         select: {
-          notable_associations: true,
+    
           market_valuations: true,
         },
       },

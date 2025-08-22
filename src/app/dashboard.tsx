@@ -10,7 +10,6 @@ export default async function Dashboard() {
     productLinesCount,
     modelsCount,
     guitarsCount,
-    associationsCount,
     recentManufacturers,
     recentGuitars,
   ] = await Promise.all([
@@ -18,7 +17,7 @@ export default async function Dashboard() {
     prisma.product_lines.count(),
     prisma.models.count(),
     prisma.individual_guitars.count(),
-    prisma.notable_associations.count(),
+
     prisma.manufacturers.findMany({
       take: 5,
       orderBy: { created_at: 'desc' },
@@ -71,13 +70,7 @@ export default async function Dashboard() {
       href: "/guitars", 
       description: "Specific instruments tracked",
     },
-    {
-      title: "Notable Associations",
-      value: associationsCount.toLocaleString(),
-      icon: Users,
-      href: "/associations",
-      description: "Famous players and owners",
-    },
+
   ]
 
   const getStatusColor = (status: string | null) => {

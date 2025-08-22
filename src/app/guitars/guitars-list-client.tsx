@@ -36,7 +36,7 @@ interface GuitarsListProps {
       } | null
     } | null
     _count: {
-      notable_associations: number
+
       market_valuations: number
     }
   }>
