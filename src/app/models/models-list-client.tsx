@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Guitar } from "lucide-react"
-import { ListView } from "@/components/ui/list-view"
+import { SortableListView } from "@/components/ui/sortable-list-view"
 import { ModelCardsView } from "@/components/ui/cards-view"
 import { ViewToggle } from "@/components/ui/view-toggle"
 import { useViewPreference } from "@/hooks/use-view-preference"
@@ -16,6 +16,7 @@ interface ModelsListProps {
     msrp_original: number | null
     currency: string | null
     description: string | null
+    updated_at: Date | string | null
     manufacturers: {
       id: string
       name: string
@@ -32,21 +33,6 @@ interface ModelsListProps {
   }>
 }
 
-function getProductionTypeColor(type: string | null) {
-  switch (type?.toLowerCase()) {
-    case 'mass':
-      return 'bg-success text-white'
-    case 'limited':
-      return 'bg-info text-white'
-    case 'custom':
-      return 'bg-primary text-white'
-    case 'prototype':
-      return 'bg-warning text-white'
-    default:
-      return 'bg-muted text-muted-foreground'
-  }
-}
-
 export function ModelsListClient({ models }: ModelsListProps) {
   const { currentView, setView, isLoaded } = useViewPreference({
     storageKey: 'models-view-preference',
@@ -59,13 +45,9 @@ export function ModelsListClient({ models }: ModelsListProps) {
     { key: 'year', label: 'Year' },
     { key: 'product_line', label: 'Product Line', render: (item: ModelsListProps['models'][0]) => item.product_lines?.name || 'N/A' },
     { 
-      key: 'production_type', 
-      label: 'Production Type', 
-      render: (item: ModelsListProps['models'][0]) => (
-        <Badge className={getProductionTypeColor(item.production_type)}>
-          {item.production_type || 'unknown'}
-        </Badge>
-      )
+      key: 'updated_at', 
+      label: 'Updated at', 
+      render: (item: ModelsListProps['models'][0]) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown'
     }
   ]
 
@@ -102,7 +84,7 @@ export function ModelsListClient({ models }: ModelsListProps) {
       {currentView === 'cards' ? (
         <ModelCardsView models={models} />
       ) : (
-        <ListView
+        <SortableListView
           data={models}
           fields={listFields}
           getHref={(item) => `/models/${item.id}`}

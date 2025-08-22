@@ -52,6 +52,11 @@ export function SortableListView({
       bValue = b.manufacturers?.name || 'Unknown'
     }
     
+    if (sortConfig.key === 'product_line') {
+      aValue = a.product_lines?.name || 'N/A'
+      bValue = b.product_lines?.name || 'N/A'
+    }
+    
     // Handle null/undefined values
     if (aValue === null || aValue === undefined) aValue = ''
     if (bValue === null || bValue === undefined) bValue = ''
