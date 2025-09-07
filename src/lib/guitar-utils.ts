@@ -30,32 +30,32 @@ export function getGuitarDisplayYear(guitar: GuitarDisplayData): string {
 export function getSignificanceColor(level: string | null): string {
   switch (level?.toLowerCase()) {
     case 'legendary':
-      return 'bg-info text-white'
+      return 'bg-blue-500 text-white'
     case 'historic':
-      return 'bg-primary text-white'
+      return 'bg-purple-500 text-white'
     case 'notable':
-      return 'bg-success text-white'
+      return 'bg-green-500 text-white'
     case 'rare':
-      return 'bg-warning text-white'
+      return 'bg-yellow-500 text-white'
     default:
-      return 'bg-muted text-muted-foreground'
+      return 'bg-gray-200 text-gray-700'
   }
 }
 
 export function getConditionColor(condition: string | null): string {
   switch (condition?.toLowerCase()) {
     case 'mint':
-      return 'bg-success text-white'
+      return 'bg-green-500 text-white'
     case 'excellent':
-      return 'bg-info text-white'
+      return 'bg-blue-500 text-white'
     case 'very good':
-      return 'bg-warning text-white'
+      return 'bg-yellow-500 text-white'
     case 'good':
-      return 'bg-primary text-white'
+      return 'bg-orange-500 text-white'
     case 'fair':
-      return 'bg-error text-white'
+      return 'bg-red-500 text-white'
     default:
-      return 'bg-muted text-muted-foreground'
+      return 'bg-gray-200 text-gray-700'
   }
 }
 

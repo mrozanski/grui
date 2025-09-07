@@ -1,6 +1,7 @@
 "use client"
 
 import { Guitar } from "lucide-react"
+import Image from "next/image"
 import { SortableListView } from "@/components/ui/sortable-list-view"
 import { ModelCardsView } from "@/components/ui/cards-view"
 import { ViewToggle } from "@/components/ui/view-toggle"
@@ -38,6 +39,19 @@ export function ModelsListClient({ models }: ModelsListProps) {
   })
 
   const listFields = [
+    { 
+      key: 'thumbnail', 
+      label: 'Photo', 
+      render: (item: ModelsListProps['models'][0]) => (
+        <Image 
+          src="/images/guitars/mini-thumb.png" 
+          alt={`${item.name} thumbnail`}
+          width={48}
+          height={48}
+          className="w-12 h-12 object-cover rounded"
+        />
+      )
+    },
     { key: 'name', label: 'Model Name' },
     { key: 'manufacturer', label: 'Manufacturer', render: (item: ModelsListProps['models'][0]) => item.manufacturers?.name || 'Unknown' },
     { key: 'year', label: 'Year' },

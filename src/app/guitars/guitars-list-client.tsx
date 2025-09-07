@@ -1,7 +1,8 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { Guitar } from "lucide-react"
+import { Guitar, ShieldCheck } from "lucide-react"
+import Image from "next/image"
 import { ListView } from "@/components/ui/list-view"
 import { GuitarCardsView } from "@/components/ui/cards-view"
 import { ViewToggle } from "@/components/ui/view-toggle"
@@ -49,6 +50,29 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
   })
 
   const listFields = [
+    { 
+      key: 'thumbnail', 
+      label: 'Photo', 
+      render: (item: GuitarsListProps['guitars'][0]) => (
+        <Image 
+          src="/images/guitars/mini-thumb.png" 
+          alt={`${getGuitarDisplayName(item)} thumbnail`}
+          width={48}
+          height={48}
+          className="w-12 h-12 object-cover rounded"
+        />
+      )
+    },
+    { 
+      key: 'attestations', 
+      label: 'Attestations', 
+      render: (item: GuitarsListProps['guitars'][0]) => (
+        <div className="flex items-center gap-1">
+          <ShieldCheck className="h-4 w-4 text-green-600 fill-green-600" />
+          <span>(3)</span>
+        </div>
+      )
+    },
     { 
       key: 'manufacturer', 
       label: 'Manufacturer', 
