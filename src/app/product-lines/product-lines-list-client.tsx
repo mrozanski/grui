@@ -192,7 +192,7 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
             { key: 'name', label: 'Name' },
             { key: 'manufacturer', label: 'Manufacturer', render: (item) => item.manufacturers?.name || 'Unknown' },
             { key: 'introduced_year', label: 'First year', render: (item) => item.introduced_year || 'Unknown' },
-            { key: 'updated_at', label: 'Updated at', render: (item) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown' },
+            { key: 'updated_at', label: 'Updated on', render: (item) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown' },
             { key: 'models', label: 'Models', render: (item) => `${item._count.models} model${item._count.models !== 1 ? 's' : ''}` }
           ]}
           getHref={(item) => `/product-lines/${item.id}`}

@@ -28,7 +28,6 @@ async function getModels() {
         select: {
           individual_guitars: true,
           specifications: true,
-          finishes: true,
         },
       },
     },

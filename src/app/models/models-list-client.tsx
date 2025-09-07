@@ -1,6 +1,5 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
 import { Guitar } from "lucide-react"
 import { SortableListView } from "@/components/ui/sortable-list-view"
 import { ModelCardsView } from "@/components/ui/cards-view"
@@ -28,7 +27,6 @@ interface ModelsListProps {
     _count: {
       individual_guitars: number
       specifications: number
-      finishes: number
     }
   }>
 }
@@ -46,7 +44,7 @@ export function ModelsListClient({ models }: ModelsListProps) {
     { key: 'product_line', label: 'Product Line', render: (item: ModelsListProps['models'][0]) => item.product_lines?.name || 'N/A' },
     { 
       key: 'updated_at', 
-      label: 'Updated at', 
+      label: 'Updated on', 
       render: (item: ModelsListProps['models'][0]) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown'
     }
   ]

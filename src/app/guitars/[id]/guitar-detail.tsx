@@ -33,9 +33,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
       specifications: {
         orderBy: { id: 'asc' }
       },
-      finishes: {
-        orderBy: { finish_name: 'asc' }
-      },
 
       market_valuations: {
         orderBy: { valuation_date: 'desc' },
@@ -45,7 +42,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
         select: {
           market_valuations: true,
           specifications: true,
-          finishes: true,
         },
       },
     },
@@ -191,15 +187,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Finishes</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{guitar._count.finishes}</div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Description and significance */}
@@ -391,29 +378,6 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
           </Card>
         )}
 
-        {/* Finishes */}
-        {guitar.finishes.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Finishes ({guitar.finishes.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {guitar.finishes.map((finish) => (
-                  <div key={finish.id} className="flex justify-between items-center py-2 border-b last:border-0">
-                    <span className="text-gray-600">{finish.finish_name}</span>
-                    <span className="font-medium text-right">
-                      {finish.color_code || finish.finish_type || 'N/A'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   )

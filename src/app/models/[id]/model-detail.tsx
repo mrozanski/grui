@@ -58,23 +58,14 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
       specifications: {
         orderBy: { id: 'asc' }
       },
-      finishes: {
-        orderBy: { finish_name: 'asc' }
-      },
       individual_guitars: {
         orderBy: [{ production_date: 'desc' }],
         take: 10,
-        include: {
-          _count: {
-    
-          },
-        },
       },
       _count: {
         select: {
           individual_guitars: true,
           specifications: true,
-          finishes: true,
           market_valuations: true,
         },
       },
@@ -183,15 +174,6 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Finishes</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{model._count.finishes}</div>
-          </CardContent>
-        </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -320,32 +302,6 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
           </Card>
         )}
 
-        {/* Finishes */}
-        {model.finishes.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Available Finishes ({model.finishes.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {model.finishes.slice(0, 10).map((finish) => (
-                  <div key={finish.id} className="flex justify-between items-center py-2 border-b last:border-0">
-                    <span className="text-gray-600">{finish.finish_name}</span>
-                    <span className="font-medium text-right">{finish.color_code || finish.finish_type || 'N/A'}</span>
-                  </div>
-                ))}
-                {model.finishes.length > 10 && (
-                  <p className="text-sm text-gray-500 pt-2">
-                    And {model.finishes.length - 10} more finishes...
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Recent Individual Guitars */}
         {model.individual_guitars.length > 0 && (

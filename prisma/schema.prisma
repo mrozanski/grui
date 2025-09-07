@@ -67,21 +67,6 @@ model data_sources {
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
-model finishes {
-  id                   String              @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
-  model_id             String?             @db.Uuid
-  individual_guitar_id String?             @db.Uuid
-  finish_name          String              @db.VarChar(100)
-  finish_type          String?             @db.VarChar(50)
-  color_code           String?             @db.VarChar(20)
-  rarity               String?             @db.VarChar(20)
-  created_at           DateTime?           @default(now()) @db.Timestamptz(6)
-  individual_guitars   individual_guitars? @relation(fields: [individual_guitar_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  models               models?             @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model individual_guitars {
   id                         String              @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
   model_id                   String?             @db.Uuid
@@ -99,9 +84,9 @@ model individual_guitars {
   condition_rating           String?             @db.VarChar(20)
   modifications              String?
   provenance_notes           String?
+  created_by                 String?             @db.VarChar(100)
   created_at                 DateTime?           @default(now()) @db.Timestamptz(6)
   updated_at                 DateTime?           @default(now()) @db.Timestamptz(6)
-  finishes                   finishes[]
   models                     models?             @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   market_valuations          market_valuations[]
   specifications             specifications[]
@@ -194,6 +179,7 @@ model manufacturers {
   website       String?         @db.VarChar(255)
   status        String?         @default("active") @db.VarChar(20)
   notes         String?
+  created_by    String?         @db.VarChar(100)
   created_at    DateTime?       @default(now()) @db.Timestamptz(6)
   updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
   models        models[]
@@ -239,9 +225,9 @@ model models {
   msrp_original                 Decimal?                    @db.Decimal(10, 2)
   currency                      String?                     @default("USD") @db.VarChar(3)
   description                   String?
+  created_by                    String?                     @db.VarChar(100)
   created_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
   updated_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
-  finishes                      finishes[]
   individual_guitars            individual_guitars[]
   market_valuations             market_valuations[]
   manufacturers                 manufacturers?              @relation(fields: [manufacturer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -285,12 +271,10 @@ model specifications {
   nut_width_inches        Decimal?            @db.Decimal(3, 2)
   neck_profile            String?             @db.VarChar(50)
   bridge_type             String?             @db.VarChar(50)
-  pickup_configuration    String?             @db.VarChar(20)
-  pickup_brand            String?             @db.VarChar(50)
-  pickup_model            String?             @db.VarChar(100)
+  pickup_configuration    String?             @db.VarChar(150)
   electronics_description String?
   hardware_finish         String?             @db.VarChar(50)
-  body_finish             String?             @db.VarChar(100)
+  body_finish             String?
   weight_lbs              Decimal?            @db.Decimal(4, 2)
   case_included           Boolean?            @default(false)
   case_type               String?             @db.VarChar(50)

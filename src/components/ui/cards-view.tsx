@@ -152,7 +152,6 @@ interface ModelCardsViewProps {
     _count: {
       individual_guitars: number
       specifications: number
-      finishes: number
     }
   }>
 }
@@ -249,10 +248,6 @@ export function ModelCardsView({ models }: ModelCardsViewProps) {
                   <div className="flex items-center gap-1">
                     <FileText className="h-4 w-4" />
                     <span>{model._count.specifications} specs</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Package className="h-4 w-4" />
-                    <span>{model._count.finishes} finishes</span>
                   </div>
                 </div>
                 <ExternalLink className="h-4 w-4" />
