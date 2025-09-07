@@ -19,6 +19,7 @@ interface GuitarsListProps {
   guitars: Array<{
     id: string
     serial_number: string | null
+    nickname: string | null
     production_date: Date | null
     significance_level: string | null
     current_estimated_value: number | null
@@ -34,6 +35,7 @@ interface GuitarsListProps {
       manufacturers: {
         id: string
         name: string
+        display_name: string | null
       } | null
     } | null
     _count: {
@@ -44,6 +46,9 @@ interface GuitarsListProps {
 }
 
 export function GuitarsListClient({ guitars }: GuitarsListProps) {
+  // Debug: Log the guitars data to see what's being passed
+  console.log('Guitars data passed to component:', guitars)
+  
   const { currentView, setView, isLoaded } = useViewPreference({
     storageKey: 'guitars-view-preference',
     defaultView: 'cards'
@@ -66,7 +71,7 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
     { 
       key: 'attestations', 
       label: 'Attestations', 
-      render: (item: GuitarsListProps['guitars'][0]) => (
+      render: () => (
         <div className="flex items-center gap-1">
           <ShieldCheck className="h-4 w-4 text-green-600 fill-green-600" />
           <span>(3)</span>
@@ -77,8 +82,8 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       key: 'manufacturer', 
       label: 'Manufacturer', 
       render: (item: GuitarsListProps['guitars'][0]) => {
-        if (item.models?.manufacturers?.name) {
-          return item.models.manufacturers.name
+        if (item.models?.manufacturers) {
+          return item.models.manufacturers.display_name || item.models.manufacturers.name
         }
         return item.manufacturer_name_fallback || 'Unknown'
       }
@@ -87,15 +92,20 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       key: 'model', 
       label: 'Model', 
       render: (item: GuitarsListProps['guitars'][0]) => {
-        const displayName = getGuitarDisplayName(item)
+        const modelName = item.models?.name || item.model_name_fallback || 'Model'
         const displayYear = getGuitarDisplayYear(item)
-        return `${displayName} (${displayYear})`
+        return `${modelName} (${displayYear})`
       }
     },
     { 
       key: 'serial_number', 
       label: 'Serial Number', 
       render: (item: GuitarsListProps['guitars'][0]) => item.serial_number || 'N/A' 
+    },
+    { 
+      key: 'nickname', 
+      label: 'Nickname', 
+      render: (item: GuitarsListProps['guitars'][0]) => item.nickname || 'N/A' 
     },
     { 
       key: 'significance', 

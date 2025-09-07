@@ -74,6 +74,7 @@ model individual_guitars {
   model_name_fallback        String?             @db.VarChar(150)
   year_estimate              String?             @db.VarChar(50)
   description                String?
+  nickname                   String?             @db.VarChar(50)
   serial_number              String?             @unique @db.VarChar(50)
   production_date            DateTime?           @db.Date
   production_number          Int?
@@ -174,6 +175,7 @@ model image_sources {
 model manufacturers {
   id            String          @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
   name          String          @db.VarChar(100)
+  display_name  String?         @db.VarChar(50)
   country       String?         @db.VarChar(50)
   founded_year  Int?
   website       String?         @db.VarChar(255)

@@ -11,6 +11,7 @@ interface ManufacturersListProps {
   manufacturers: Array<{
     id: string
     name: string
+    display_name: string | null
     country: string | null
     founded_year: number | null
     website: string | null
@@ -52,7 +53,7 @@ export function ManufacturersListClient({ manufacturers }: ManufacturersListProp
   }
 
   const listFields = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Name', render: (item: ManufacturersListProps['manufacturers'][0]) => item.display_name || item.name },
     { key: 'country', label: 'Country', render: (item: ManufacturersListProps['manufacturers'][0]) => item.country || 'Unknown' },
     { key: 'models', label: 'Models', render: (item: ManufacturersListProps['manufacturers'][0]) => item._count.models.toLocaleString() },
     { key: 'product_lines', label: 'Product Lines', render: (item: ManufacturersListProps['manufacturers'][0]) => item._count.product_lines.toLocaleString() },

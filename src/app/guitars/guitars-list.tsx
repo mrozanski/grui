@@ -6,6 +6,7 @@ async function getGuitars() {
     select: {
       id: true,
       serial_number: true,
+      nickname: true,
       production_date: true,
       significance_level: true,
       current_estimated_value: true,
@@ -23,6 +24,7 @@ async function getGuitars() {
             select: {
               id: true,
               name: true,
+              display_name: true,
             }
           }
         }

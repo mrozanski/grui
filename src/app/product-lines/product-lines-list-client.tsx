@@ -20,6 +20,7 @@ interface ProductLinesListProps {
     manufacturers: {
       id: string
       name: string
+      display_name: string | null
       country: string | null
     } | null
     _count: {
@@ -74,50 +75,6 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
     )
   }
 
-  const listItems = productLines.map(productLine => ({
-    id: productLine.id,
-    name: productLine.name,
-    href: `/product-lines/${productLine.id}`,
-    icon: Package,
-    content: (
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 flex-1">
-          {productLine.image ? (
-            <div className="relative h-10 w-10 flex-shrink-0">
-              <Image
-                src={productLine.image.small_url || productLine.image.thumbnail_url || productLine.image.original_url}
-                alt={productLine.image.caption || `${productLine.name} image`}
-                fill
-                className="object-cover rounded-[4px]"
-              />
-            </div>
-          ) : (
-            <Package className="h-10 w-10 text-muted-foreground flex-shrink-0" />
-          )}
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="font-medium text-foreground">{productLine.name}</h3>
-              <Badge className={getStatusColor(productLine.introduced_year, productLine.discontinued_year)}>
-                {getStatusText(productLine.introduced_year, productLine.discontinued_year)}
-              </Badge>
-            </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            {productLine.manufacturers?.name || 'Unknown Manufacturer'}
-            {productLine.manufacturers?.country && ` • ${productLine.manufacturers.country}`}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {getProductionYears(productLine.introduced_year, productLine.discontinued_year)} • {productLine._count.models} model{productLine._count.models !== 1 ? 's' : ''}
-          </p>
-          {productLine.description && (
-            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-              {productLine.description}
-            </p>
-          )}
-          </div>
-        </div>
-      </div>
-    )
-  }))
 
   const cardItems = productLines.map(productLine => ({
     id: productLine.id,
@@ -143,7 +100,7 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
                 <div className="flex-1">
                   <CardTitle className="text-lg">{productLine.name}</CardTitle>
                   <CardDescription>
-                    {productLine.manufacturers?.name || 'Unknown Manufacturer'}
+                    {productLine.manufacturers?.display_name || productLine.manufacturers?.name || 'Unknown Manufacturer'}
                     {productLine.manufacturers?.country && ` • ${productLine.manufacturers.country}`}
                   </CardDescription>
                 </div>
@@ -190,7 +147,7 @@ export function ProductLinesListClient({ productLines }: ProductLinesListProps) 
           data={productLines}
           fields={[
             { key: 'name', label: 'Name' },
-            { key: 'manufacturer', label: 'Manufacturer', render: (item) => item.manufacturers?.name || 'Unknown' },
+            { key: 'manufacturer', label: 'Manufacturer', render: (item) => item.manufacturers?.display_name || item.manufacturers?.name || 'Unknown' },
             { key: 'introduced_year', label: 'First year', render: (item) => item.introduced_year || 'Unknown' },
             { key: 'updated_at', label: 'Updated on', render: (item) => item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Unknown' },
             { key: 'models', label: 'Models', render: (item) => `${item._count.models} model${item._count.models !== 1 ? 's' : ''}` }

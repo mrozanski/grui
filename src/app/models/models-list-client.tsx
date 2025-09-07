@@ -20,6 +20,7 @@ interface ModelsListProps {
     manufacturers: {
       id: string
       name: string
+      display_name: string | null
     } | null
     product_lines: {
       id: string
@@ -53,7 +54,7 @@ export function ModelsListClient({ models }: ModelsListProps) {
       )
     },
     { key: 'name', label: 'Model Name' },
-    { key: 'manufacturer', label: 'Manufacturer', render: (item: ModelsListProps['models'][0]) => item.manufacturers?.name || 'Unknown' },
+    { key: 'manufacturer', label: 'Manufacturer', render: (item: ModelsListProps['models'][0]) => item.manufacturers?.display_name || item.manufacturers?.name || 'Unknown' },
     { key: 'year', label: 'Year' },
     { key: 'product_line', label: 'Product Line', render: (item: ModelsListProps['models'][0]) => item.product_lines?.name || 'N/A' },
     { 
