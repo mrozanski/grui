@@ -15,6 +15,34 @@ import {
   formatCurrency 
 } from "@/lib/guitar-utils"
 
+// Helper function to select the best available image for thumbnail
+function selectBestThumbnailImage(images: GuitarsListProps['guitars'][0]['images']): string {
+  const fallbackImage = "/images/guitars/mini-thumb.png"
+  
+  if (!images || images.length === 0) {
+    return fallbackImage
+  }
+
+  // Priority order: gallery > primary > body_front > headstock
+  const priorityOrder = ['gallery', 'primary', 'body_front', 'headstock']
+  
+  for (const imageType of priorityOrder) {
+    const image = images.find(img => img.image_type === imageType)
+    if (image) {
+      // Prefer thumbnail_url, then small_url, then original_url
+      return image.thumbnail_url || image.small_url || image.original_url || fallbackImage
+    }
+  }
+  
+  // If no priority images found, use the first available image
+  const firstImage = images[0]
+  if (firstImage) {
+    return firstImage.thumbnail_url || firstImage.small_url || firstImage.original_url || fallbackImage
+  }
+  
+  return fallbackImage
+}
+
 interface GuitarsListProps {
   guitars: Array<{
     id: string
@@ -38,8 +66,17 @@ interface GuitarsListProps {
         display_name: string | null
       } | null
     } | null
+    images: Array<{
+      entity_id: string
+      image_type: string
+      thumbnail_url: string | null
+      small_url: string | null
+      medium_url: string | null
+      original_url: string
+      caption: string | null
+      display_order: number | null
+    }>
     _count: {
-
       market_valuations: number
     }
   }>
@@ -60,7 +97,7 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       label: 'Photo', 
       render: (item: GuitarsListProps['guitars'][0]) => (
         <Image 
-          src="/images/guitars/mini-thumb.png" 
+          src={selectBestThumbnailImage(item.images)} 
           alt={`${getGuitarDisplayName(item)} thumbnail`}
           width={48}
           height={48}
@@ -69,14 +106,9 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       )
     },
     { 
-      key: 'attestations', 
-      label: 'Attestations', 
-      render: () => (
-        <div className="flex items-center gap-1">
-          <ShieldCheck className="h-4 w-4 text-green-600 fill-green-600" />
-          <span>(3)</span>
-        </div>
-      )
+      key: 'nickname', 
+      label: 'Nickname', 
+      render: (item: GuitarsListProps['guitars'][0]) => item.nickname || 'N/A' 
     },
     { 
       key: 'manufacturer', 
@@ -103,9 +135,14 @@ export function GuitarsListClient({ guitars }: GuitarsListProps) {
       render: (item: GuitarsListProps['guitars'][0]) => item.serial_number || 'N/A' 
     },
     { 
-      key: 'nickname', 
-      label: 'Nickname', 
-      render: (item: GuitarsListProps['guitars'][0]) => item.nickname || 'N/A' 
+      key: 'attestations', 
+      label: 'Attestations', 
+      render: () => (
+        <div className="flex items-center gap-1">
+          <ShieldCheck className="h-4 w-4 text-green-600 fill-green-600" />
+          <span>({Math.floor(Math.random() * 13) + 1})</span>
+        </div>
+      )
     },
     { 
       key: 'significance', 

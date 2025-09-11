@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, DollarSign } from "lucide-react"
@@ -281,10 +282,48 @@ interface GuitarCardsViewProps {
         name: string
       } | null
     } | null
+    images: Array<{
+      entity_id: string
+      image_type: string
+      thumbnail_url: string | null
+      small_url: string | null
+      medium_url: string | null
+      original_url: string
+      caption: string | null
+      display_order: number | null
+    }>
     _count: {
       market_valuations: number
     }
   }>
+}
+
+// Helper function to select the best available image for guitar cards
+function selectBestGuitarImage(images: GuitarCardsViewProps['guitars'][0]['images']): string {
+  const fallbackImage = "/images/guitars/guitar-default.jpg"
+  
+  if (!images || images.length === 0) {
+    return fallbackImage
+  }
+
+  // Priority order: gallery > primary > body_front > headstock
+  const priorityOrder = ['gallery', 'primary', 'body_front', 'headstock']
+  
+  for (const imageType of priorityOrder) {
+    const image = images.find(img => img.image_type === imageType)
+    if (image) {
+      // Prefer medium_url for cards, then small_url, then original_url
+      return image.medium_url || image.small_url || image.original_url || fallbackImage
+    }
+  }
+  
+  // If no priority images found, use the first available image
+  const firstImage = images[0]
+  if (firstImage) {
+    return firstImage.medium_url || firstImage.small_url || firstImage.original_url || fallbackImage
+  }
+  
+  return fallbackImage
 }
 
 function formatDate(date: Date | null) {
@@ -311,23 +350,34 @@ export function GuitarCardsView({ guitars }: GuitarCardsViewProps) {
         <Link key={guitar.id} href={`/guitars/${guitar.id}`}>
           <Card className="h-full transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer">
             <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <CardTitle className="text-lg">
-                    {getGuitarDisplayName(guitar)}
-                  </CardTitle>
-                  <div className="flex gap-2">
-                    <Badge className={getSignificanceColor(guitar.significance_level)}>
-                      {guitar.significance_level || 'notable'}
-                    </Badge>
-                    {guitar.condition_rating && (
-                      <Badge className={getConditionColor(guitar.condition_rating)} variant="outline">
-                        {guitar.condition_rating}
-                      </Badge>
-                    )}
+              <div className="flex items-start gap-4">
+                <Image 
+                  src={selectBestGuitarImage(guitar.images)} 
+                  alt={`${getGuitarDisplayName(guitar)} image`}
+                  width={80}
+                  height={48}
+                  className="w-20 h-12 object-cover rounded flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <CardTitle className="text-lg truncate">
+                        {getGuitarDisplayName(guitar)}
+                      </CardTitle>
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge className={getSignificanceColor(guitar.significance_level)}>
+                          {guitar.significance_level || 'notable'}
+                        </Badge>
+                        {guitar.condition_rating && (
+                          <Badge className={getConditionColor(guitar.condition_rating)} variant="outline">
+                            {guitar.condition_rating}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <Guitar className="h-5 w-5 text-muted-foreground flex-shrink-0 ml-2" />
                   </div>
                 </div>
-                <Guitar className="h-5 w-5 text-muted-foreground" />
               </div>
               <CardDescription>
                 <div className="space-y-1">
