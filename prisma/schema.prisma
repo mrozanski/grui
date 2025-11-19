@@ -88,12 +88,21 @@ model individual_guitars {
   created_by                 String?             @db.VarChar(100)
   created_at                 DateTime?           @default(now()) @db.Timestamptz(6)
   updated_at                 DateTime?           @default(now()) @db.Timestamptz(6)
+  attestation_uid            String?             @db.VarChar(66)
+  ipfs_cid                   String?             @db.VarChar(100)
+  attestation_status         String?             @default("pending") @db.VarChar(20)
+  attested_by                String?             @db.VarChar(100)
+  attested_at                DateTime?           @db.Timestamptz(6)
+  cosigner_wallet            String?             @db.VarChar(42)
+  cosigned_at                DateTime?           @db.Timestamptz(6)
   models                     models?             @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   market_valuations          market_valuations[]
   specifications             specifications[]
 
   @@index([model_id], map: "idx_individual_guitars_model")
   @@index([significance_level, current_estimated_value], map: "idx_individual_guitars_significance")
+  @@index([attestation_status], map: "idx_individual_guitars_attestation_status")
+  @@index([attestation_uid], map: "idx_individual_guitars_attestation_uid")
 }
 
 /// Image storage metadata table with direct entity associations
@@ -173,19 +182,20 @@ model image_sources {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model manufacturers {
-  id            String          @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
-  name          String          @db.VarChar(100)
-  display_name  String?         @db.VarChar(50)
-  country       String?         @db.VarChar(50)
-  founded_year  Int?
-  website       String?         @db.VarChar(255)
-  status        String?         @default("active") @db.VarChar(20)
-  notes         String?
-  created_by    String?         @db.VarChar(100)
-  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
-  models        models[]
-  product_lines product_lines[]
+  id                   String                 @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  name                 String                 @db.VarChar(100)
+  display_name         String?                @db.VarChar(50)
+  country              String?                @db.VarChar(50)
+  founded_year         Int?
+  website              String?                @db.VarChar(255)
+  status               String?                @default("active") @db.VarChar(20)
+  notes                String?
+  created_by           String?                @db.VarChar(100)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  manufacturer_wallets manufacturer_wallets[]
+  models               models[]
+  product_lines        product_lines[]
 
   @@index([name], map: "idx_manufacturers_name_pattern")
   @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_manufacturers_name_trgm", type: Gin)
@@ -230,6 +240,13 @@ model models {
   created_by                    String?                     @db.VarChar(100)
   created_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
   updated_at                    DateTime?                   @default(now()) @db.Timestamptz(6)
+  attestation_uid               String?                     @db.VarChar(66)
+  ipfs_cid                      String?                     @db.VarChar(100)
+  attestation_status            String?                     @default("pending") @db.VarChar(20)
+  attested_by                   String?                     @db.VarChar(100)
+  attested_at                   DateTime?                   @db.Timestamptz(6)
+  cosigner_wallet               String?                     @db.VarChar(42)
+  cosigned_at                   DateTime?                   @db.Timestamptz(6)
   individual_guitars            individual_guitars[]
   market_valuations             market_valuations[]
   manufacturers                 manufacturers?              @relation(fields: [manufacturer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -241,6 +258,8 @@ model models {
   @@index([manufacturer_id, year], map: "idx_models_manufacturer_year")
   @@index([name], map: "idx_models_name_pattern")
   @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_models_name_trgm", type: Gin)
+  @@index([attestation_status], map: "idx_models_attestation_status")
+  @@index([attestation_uid], map: "idx_models_attestation_uid")
 }
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
@@ -349,4 +368,76 @@ model review_model_associations {
   @@unique([review_id, model_id])
   @@index([model_id], map: "idx_review_model_associations_model")
   @@index([review_id], map: "idx_review_model_associations_review")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model attestations {
+  id               String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  uid              String    @unique @db.VarChar(66)
+  schema_uid       String    @db.VarChar(66)
+  schema_type      String    @db.VarChar(50)
+  entity_type      String    @db.VarChar(50)
+  entity_id        String    @db.Uuid
+  attestation_data Json
+  ipfs_cid         String?   @db.VarChar(100)
+  schema_version   String?   @db.VarChar(20)
+  signer_wallet    String    @db.VarChar(42)
+  signer_role      String?   @default("admin") @db.VarChar(20)
+  signed_at        DateTime  @db.Timestamptz(6)
+  cosigner_wallet  String?   @db.VarChar(42)
+  cosigner_role    String?   @db.VarChar(20)
+  cosigned_at      DateTime? @db.Timestamptz(6)
+  status           String?   @default("pending") @db.VarChar(20)
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([cosigner_wallet], map: "idx_attestations_cosigner_wallet")
+  @@index([entity_type, entity_id], map: "idx_attestations_entity_type_id")
+  @@index([schema_type], map: "idx_attestations_schema_type")
+  @@index([schema_uid], map: "idx_attestations_schema_uid")
+  @@index([schema_version], map: "idx_attestations_schema_version")
+  @@index([signed_at], map: "idx_attestations_signed_at")
+  @@index([signer_wallet], map: "idx_attestations_signer_wallet")
+  @@index([status], map: "idx_attestations_status")
+  @@index([uid], map: "idx_attestations_uid")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model manufacturer_wallets {
+  id              String        @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  manufacturer_id String        @db.Uuid
+  wallet_address  String        @unique @db.VarChar(42)
+  status          String?       @default("active") @db.VarChar(20)
+  registered_at   DateTime?     @default(now()) @db.Timestamptz(6)
+  registered_by   String?       @db.VarChar(100)
+  notes           String?
+  manufacturers   manufacturers @relation(fields: [manufacturer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([manufacturer_id], map: "idx_manufacturer_wallets_manufacturer_id")
+  @@index([status], map: "idx_manufacturer_wallets_status")
+  @@index([wallet_address], map: "idx_manufacturer_wallets_wallet_address")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model schema_versions {
+  id                                                                         String            @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  schema_name                                                                String            @db.VarChar(100)
+  version                                                                    String            @db.VarChar(20)
+  schema_uid                                                                 String            @db.VarChar(66)
+  previous_version_id                                                        String?           @db.Uuid
+  next_version_id                                                            String?           @db.Uuid
+  changelog                                                                  String?
+  effective_date                                                             DateTime          @db.Timestamptz(6)
+  deprecated_date                                                            DateTime?         @db.Timestamptz(6)
+  status                                                                     String?           @default("active") @db.VarChar(20)
+  created_at                                                                 DateTime?         @default(now()) @db.Timestamptz(6)
+  schema_versions_schema_versions_next_version_idToschema_versions           schema_versions?  @relation("schema_versions_next_version_idToschema_versions", fields: [next_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_schema_versions_schema_versions_next_version_idToschema_versions     schema_versions[] @relation("schema_versions_next_version_idToschema_versions")
+  schema_versions_schema_versions_previous_version_idToschema_versions       schema_versions?  @relation("schema_versions_previous_version_idToschema_versions", fields: [previous_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_schema_versions_schema_versions_previous_version_idToschema_versions schema_versions[] @relation("schema_versions_previous_version_idToschema_versions")
+
+  @@unique([schema_name, version])
+  @@index([effective_date], map: "idx_schema_versions_effective_date")
+  @@index([schema_name], map: "idx_schema_versions_name")
+  @@index([schema_uid], map: "idx_schema_versions_schema_uid")
+  @@index([status], map: "idx_schema_versions_status")
 }
