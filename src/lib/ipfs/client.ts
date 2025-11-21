@@ -37,6 +37,17 @@ export interface PinataResponse {
 }
 
 /**
+ * JSON replacer function to handle BigInt values
+ * Converts BigInt to strings for JSON serialization
+ */
+function bigIntReplacer(_key: string, value: unknown): unknown {
+  if (typeof value === 'bigint') {
+    return value.toString();
+  }
+  return value;
+}
+
+/**
  * Pins JSON data to IPFS via Pinata
  *
  * @param data - Data to pin (will be JSON stringified)
@@ -81,7 +92,7 @@ export async function pinJSONToIPFS(
     const response = await fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify(body, bigIntReplacer),
     });
 
     if (!response.ok) {

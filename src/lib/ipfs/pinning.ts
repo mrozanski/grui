@@ -10,6 +10,9 @@
 import { prisma } from '@/lib/prisma';
 import { pinJSONToIPFS, isPinataConfigured } from './client';
 import type { OffchainAttestationResult } from '../eas/attestation';
+import { decodeModelAttestationV1, safeDecodeModelAttestationV1 } from '../eas/schemas/decoders/model-v1';
+import { decodeInstrumentAttestationV1, safeDecodeInstrumentAttestationV1 } from '../eas/schemas/decoders/instrument-v1';
+import { EAS_CONFIG } from '../eas/config';
 
 /**
  * Maximum retry attempts for pinning
@@ -20,6 +23,32 @@ const MAX_RETRY_ATTEMPTS = 3;
  * Retry delay in milliseconds (exponential backoff)
  */
 const RETRY_DELAY_MS = 1000;
+
+/**
+ * Decodes attestation data based on schema type
+ * Adds decodedData field for human-readable JSON in IPFS
+ */
+function decodeAttestationData(attestation: OffchainAttestationResult): OffchainAttestationResult & { decodedData?: unknown } {
+  const schemaUid = attestation.message.schema;
+  const encodedData = attestation.message.data;
+
+  // Determine schema type and decode accordingly
+  let decodedData: unknown = null;
+
+  if (schemaUid === EAS_CONFIG.schemas.model.uid) {
+    // Model attestation
+    decodedData = safeDecodeModelAttestationV1(encodedData);
+  } else if (schemaUid === EAS_CONFIG.schemas.instrument.uid) {
+    // Instrument attestation
+    decodedData = safeDecodeInstrumentAttestationV1(encodedData);
+  }
+
+  // Return attestation with decoded data added
+  return {
+    ...attestation,
+    decodedData: decodedData || null,
+  };
+}
 
 /**
  * Pins attestation to IPFS with retry logic
@@ -39,6 +68,9 @@ export async function pinAttestationToIPFS(
     return null;
   }
 
+  // Decode the attestation data for human-readable JSON in IPFS
+  const attestationWithDecodedData = decodeAttestationData(attestation);
+
   let lastError: Error | null = null;
 
   // Retry logic with exponential backoff
@@ -47,7 +79,7 @@ export async function pinAttestationToIPFS(
       console.log(`📌 Attempt ${attempt}/${MAX_RETRY_ATTEMPTS}: Pinning attestation to IPFS...`);
 
       const cid = await pinJSONToIPFS(
-        attestation,
+        attestationWithDecodedData,
         attestationName || `attestation-${attestation.uid}`
       );
 
