@@ -259,16 +259,29 @@ export async function cosignAttestationAction(
   walletAddress: string
 ): Promise<CreateAttestationResult> {
   try {
+    // Normalize wallet address
+    const normalizedWallet = walletAddress.toLowerCase();
     console.log(`📝 Processing co-signature for attestation ${attestationUid}...`);
+    console.log(`   Wallet: ${normalizedWallet}`);
 
     // 1. Verify manufacturer wallet is registered
     const manufacturerWallet = await prisma.manufacturer_wallets.findUnique({
-      where: { wallet_address: walletAddress },
+      where: { wallet_address: normalizedWallet },
       include: { manufacturers: true },
     });
 
-    if (!manufacturerWallet || manufacturerWallet.status !== 'active') {
-      return { success: false, error: 'Unauthorized wallet' };
+    if (!manufacturerWallet) {
+      return { 
+        success: false, 
+        error: 'This wallet is not registered as a manufacturer wallet. Please register your wallet first.' 
+      };
+    }
+
+    if (manufacturerWallet.status !== 'active') {
+      return { 
+        success: false, 
+        error: 'This manufacturer wallet is inactive. Please contact an administrator.' 
+      };
     }
 
     // 2. Fetch attestation
@@ -280,25 +293,45 @@ export async function cosignAttestationAction(
       return { success: false, error: 'Attestation not found' };
     }
 
-    // 3. Verify manufacturer matches model manufacturer (for model attestations)
+    // 3. Check if already co-signed
+    if (attestationRecord.status === 'official' && attestationRecord.cosigner_wallet) {
+      return { 
+        success: false, 
+        error: 'This attestation has already been co-signed.' 
+      };
+    }
+
+    // 4. Verify manufacturer matches model manufacturer (for model attestations)
     if (attestationRecord.schema_type === 'model') {
       const model = await prisma.models.findUnique({
         where: { id: attestationRecord.entity_id },
         include: { manufacturers: true },
       });
 
-      if (!model || model.manufacturer_id !== manufacturerWallet.manufacturer_id) {
-        return { success: false, error: 'Manufacturer mismatch' };
+      if (!model) {
+        return { success: false, error: 'Model not found for this attestation' };
+      }
+
+      if (model.manufacturer_id !== manufacturerWallet.manufacturer_id) {
+        return { 
+          success: false, 
+          error: `You can only co-sign attestations for ${manufacturerWallet.manufacturers.name}. This model belongs to a different manufacturer.` 
+        };
       }
     }
 
-    // 4. Create and verify co-sign message
+    // 5. Create and verify co-sign message
     const message = createCosignMessage(attestationUid, attestationRecord.signer_wallet);
+    console.log('   Expected message:', message);
 
-    const isValid = verifyManufacturerCosignature(message, signature, walletAddress);
+    const isValid = verifyManufacturerCosignature(message, signature, normalizedWallet);
 
     if (!isValid) {
-      return { success: false, error: 'Invalid signature' };
+      console.log('   Signature verification failed');
+      return { 
+        success: false, 
+        error: 'Signature verification failed. Please try signing again.' 
+      };
     }
 
     console.log('✅ Signature verified');

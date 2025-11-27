@@ -12,6 +12,21 @@ This roadmap outlines the step-by-step implementation of EAS attestations for gu
 
 ---
 
+## Phase Overview
+
+| Phase | Name | Description | Status |
+|-------|------|-------------|--------|
+| **1A** | Core Infrastructure | EAS SDK setup, schema registration, IPFS pinning, model attestation creation | ✅ Complete |
+| **1B** | Manufacturer Co-Signing | Wallet registration, manufacturer dashboard, co-sign workflow (web2 DB) | ✅ Complete |
+| **1C** | UI Polish | Attestation display on model pages, copy buttons, IPFS links | Pending |
+| **2A** | Instrument Attestations | Database schema, instrument attestation creation linked to models | ✅ Complete |
+| **2B** | Chain Visualization | Provenance chain UI showing model → instrument → reviews | Pending |
+| **3** | Production Deployment | Mainnet schema registration, resolver contracts, production launch | Pending |
+
+> **Note:** Phase 1B co-signing currently stores endorsements in PostgreSQL only. On-chain endorsement attestations (chained attestation model) will be implemented as part of Phase 3 with resolver contracts. See [Production Architecture](#production-architecture-resolver-contracts--decentralized-discovery) for details.
+
+---
+
 ## Implementation Phases
 
 ### Phase 1: Model Attestations Foundation (Weeks 1-4)
@@ -1047,7 +1062,6 @@ const allModels = await getAllModels(); // Handles both v1 and v2
 
 ### Breaking Changes
 None - new fields are optional and additive.
-```
 
 ### Complete Update Checklist
 
@@ -1071,6 +1085,228 @@ Before deploying a schema update:
 - [ ] Deploy to production
 - [ ] Monitor for errors
 - [ ] Announce change to stakeholders
+
+---
+
+## Production Architecture: Resolver Contracts & Decentralized Discovery
+
+> **Note:** The v1.0.0 schemas deployed to Ethereum Sepolia testnet are for development and testing only. Production schemas (v2.0.0+) will incorporate resolver contracts for on-chain indexing and fully decentralized verification.
+
+### Current Limitation (v1 Schemas)
+
+The current architecture stores attestation-to-entity mappings in PostgreSQL:
+
+```
+IPFS (Pinata)                          PostgreSQL
+┌─────────────────────┐                ┌─────────────────────┐
+│ Attestation CIDs    │  ◄─── index ───│ entity_id → CID     │
+│ (content-addressed) │                │ (queryable)         │
+└─────────────────────┘                └─────────────────────┘
+```
+
+**Problem:** If the web2 database is lost, attestations exist on IPFS but cannot be discovered by entity (model/instrument ID).
+
+### Production Solution: Resolver Contracts
+
+EAS [Resolver Contracts](https://docs.attest.org/docs/core--concepts/resolver-contracts) act as hooks that execute automatically when attestations are created. We will use them to maintain an on-chain index.
+
+#### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Attestation Creation Flow                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+  1. Create Attestation              2. Resolver Hook              3. On-Chain Index
+  ┌─────────────────┐              ┌─────────────────┐           ┌─────────────────┐
+  │ EAS.attest()    │──────────────│ onAttest()      │──────────▶│ entityId → UIDs │
+  │                 │   automatic  │ - Extract ID    │   update  │ (queryable)     │
+  │ Schema v2.0.0   │              │ - Index UID     │           │                 │
+  │ + resolver addr │              │ - Emit event    │           │                 │
+  └─────────────────┘              └─────────────────┘           └─────────────────┘
+                                                                         │
+                                                                         ▼
+                                                                  ┌─────────────────┐
+                                                                  │ IPFS (Pinata)   │
+                                                                  │ Full attestation│
+                                                                  │ data by CID     │
+                                                                  └─────────────────┘
+```
+
+#### Resolver Contract Design
+
+```solidity
+// GuitarAttestationResolver.sol
+contract GuitarAttestationResolver is SchemaResolver {
+    // On-chain index: entity_id => attestation UIDs
+    mapping(bytes32 => bytes32[]) public entityAttestations;
+    
+    // Called automatically when attestation is created
+    function onAttest(Attestation calldata attestation, uint256 value) 
+        internal override returns (bool) 
+    {
+        bytes32 entityId = extractEntityId(attestation.data);
+        entityAttestations[entityId].push(attestation.uid);
+        emit AttestationIndexed(entityId, attestation.uid, attestation.attester);
+        return true;
+    }
+    
+    // Public query function - works without web2 DB
+    function getAttestationsForEntity(bytes32 entityId) 
+        external view returns (bytes32[] memory) 
+    {
+        return entityAttestations[entityId];
+    }
+}
+```
+
+#### Standalone Verification Flow
+
+With resolver contracts, anyone can verify attestations without the web2 database:
+
+```
+1. Query resolver contract: getAttestationsForEntity(modelId)
+   └── Returns: [uid_1, uid_2, uid_3]
+
+2. For each UID, fetch from IPFS (CID embedded in attestation or via Pinata metadata)
+   └── Returns: Full attestation JSON with decodedData
+
+3. Verify each attestation:
+   └── Check signature, schema, signer address
+
+4. Reconstruct full provenance chain
+   └── Model attestation → Endorsements → Instrument attestations
+```
+
+### Chained Attestation Model for Endorsements
+
+Manufacturer endorsements (co-signatures) will be implemented as **separate attestations** that reference the original, rather than modifying the original attestation.
+
+#### Why Chained Attestations?
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| **Multi-sig original** | Single attestation | EAS doesn't support multi-sig; complex implementation |
+| **Chained endorsement** | Native EAS pattern; clear audit trail; extensible | Two attestations per endorsed model |
+
+**Decision:** Use chained attestations. This aligns with EAS design patterns and provides clear provenance.
+
+#### Endorsement Schema (v2.0.0)
+
+```typescript
+// GuitarEndorsement_v2_0_0
+{
+  name: 'GuitarEndorsement',
+  version: '2.0.0',
+  definition: `
+    bytes32 endorsed_attestation_uid,
+    string endorsed_ipfs_cid,
+    string entity_type,
+    string entity_id,
+    string endorsement_type,
+    string endorser_name
+  `,
+  resolver: ENDORSEMENT_RESOLVER_ADDRESS
+}
+```
+
+#### Provenance Chain Structure
+
+```
+┌─────────────────────────────────────────┐
+│  Model Attestation (Admin-signed)       │
+│  UID: 0xabc...                          │
+│  Signer: Registry Admin                 │
+│  Data: manufacturer, model, year, etc.  │
+│  CID: QmModel...                        │
+└───────────────────┬─────────────────────┘
+                    │ refUID
+                    ▼
+┌─────────────────────────────────────────┐
+│  Endorsement Attestation (Mfr-signed)   │
+│  UID: 0xdef...                          │
+│  Signer: Manufacturer Wallet            │
+│  Data: endorsed_uid, endorsement_type   │
+│  CID: QmEndorse...                      │
+└───────────────────┬─────────────────────┘
+                    │ refUID (optional, for instruments)
+                    ▼
+┌─────────────────────────────────────────┐
+│  Instrument Attestation (Admin-signed)  │
+│  UID: 0xghi...                          │
+│  Data: model_attestation_uid, serial... │
+└─────────────────────────────────────────┘
+```
+
+### Schema Version Strategy
+
+| Version | Network | Resolver | Purpose |
+|---------|---------|----------|---------|
+| v1.0.0 | Sepolia (testnet) | None | Development & testing |
+| v2.0.0 | Base Mainnet | Yes | Production with on-chain indexing |
+
+**Migration Path:**
+1. Complete testing with v1.0.0 schemas on Sepolia
+2. Design and audit resolver contracts
+3. Deploy resolver contracts to Base Mainnet
+4. Register v2.0.0 schemas with resolver addresses
+5. All production attestations use v2.0.0+
+
+### IPNS Index (Backup Discovery)
+
+As an additional discovery mechanism, maintain an IPNS-published index:
+
+```json
+// guitar-registry-index.json (pinned to IPFS, pointer via IPNS/ENS)
+{
+  "version": "1.0.0",
+  "updated_at": "2025-11-27T10:00:00Z",
+  "models": {
+    "019a98c7-...": {
+      "attestation_uid": "0xabc...",
+      "ipfs_cid": "QmModel...",
+      "endorsements": [
+        { "uid": "0xdef...", "cid": "QmEndorse...", "signer": "0x..." }
+      ]
+    }
+  }
+}
+```
+
+**Publishing:**
+- Generate index from database (scheduled job)
+- Pin to IPFS
+- Update IPNS record or ENS (`guitar-registry.eth`)
+
+This provides a fallback if resolver contract queries are unavailable.
+
+### Implementation Checklist (Pre-Production)
+
+**Resolver Contracts:**
+- [ ] Design resolver contract interface
+- [ ] Implement GuitarAttestationResolver
+- [ ] Implement EndorsementResolver
+- [ ] Write comprehensive tests
+- [ ] Security audit
+- [ ] Deploy to testnet, verify behavior
+- [ ] Deploy to Base Mainnet
+
+**Schema v2.0.0:**
+- [ ] Finalize schema definitions with lessons from v1
+- [ ] Register schemas with resolver addresses
+- [ ] Update application to use v2 schemas
+- [ ] Test full flow on testnet
+
+**IPNS Index:**
+- [ ] Create index generation script
+- [ ] Set up IPNS key management
+- [ ] Implement scheduled index updates
+- [ ] Consider ENS registration for discoverability
+
+**Verification Tools:**
+- [ ] Create standalone verification script (no web2 dependency)
+- [ ] Document verification process for third parties
+- [ ] Publish verification tool as open source
 
 ---
 

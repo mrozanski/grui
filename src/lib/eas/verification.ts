@@ -104,21 +104,23 @@ export function verifyManufacturerCosignature(
 }
 
 /**
- * Creates a message for manufacturer co-signing
+ * Creates a deterministic message for manufacturer co-signing
+ * NOTE: This message must be identical on client and server for signature verification
  *
  * @param attestationUid - The attestation UID being co-signed
  * @param originalSigner - The address of the original signer
- * @returns Message to be signed
+ * @returns Message to be signed (deterministic, no timestamp)
  */
 export function createCosignMessage(
   attestationUid: string,
   originalSigner: string
 ): string {
+  // Use a deterministic message format (no timestamp) so client and server produce identical messages
   const message = {
+    action: 'cosign_attestation',
     attestation_uid: attestationUid,
-    original_signer: originalSigner,
+    original_signer: originalSigner.toLowerCase(),
     cosigner_role: 'manufacturer',
-    timestamp: Date.now(),
   };
 
   return JSON.stringify(message, null, 2);
