@@ -12,6 +12,7 @@ export function AttestationBadge({ status, uid }: AttestationBadgeProps) {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'verified':
+      case 'official': // manufacturer co-signed, maps to verified
         return {
           variant: 'success' as const,
           icon: CheckCircle,

@@ -14,6 +14,7 @@ import {
   formatCurrency, 
   formatDate 
 } from "@/lib/guitar-utils"
+import { AttestationSection } from "@/components/attestations/AttestationSection"
 
 interface GuitarDetailProps {
   params: Promise<{ id: string }>
@@ -268,6 +269,22 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Blockchain Attestation */}
+      {guitar.attestation_uid && (
+        <AttestationSection
+          attestation={{
+            attestation_uid: guitar.attestation_uid,
+            ipfs_cid: guitar.ipfs_cid,
+            attestation_status: guitar.attestation_status,
+            attested_by: guitar.attested_by,
+            attested_at: guitar.attested_at,
+            cosigner_wallet: guitar.cosigner_wallet,
+            cosigned_at: guitar.cosigned_at,
+          }}
+          entityType="instrument"
+        />
+      )}
 
       {/* Content sections */}
       <div className="grid gap-6 lg:grid-cols-2">

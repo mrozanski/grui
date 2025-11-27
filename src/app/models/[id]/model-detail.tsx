@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink, Package, FileText, Guitar, DollarSign, Building } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
+import { AttestationSection } from "@/components/attestations/AttestationSection"
 
 interface ModelDetailProps {
   params: Promise<{ id: string }>
@@ -232,6 +233,22 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Blockchain Attestation */}
+      {model.attestation_uid && (
+        <AttestationSection
+          attestation={{
+            attestation_uid: model.attestation_uid,
+            ipfs_cid: model.ipfs_cid,
+            attestation_status: model.attestation_status,
+            attested_by: model.attested_by,
+            attested_at: model.attested_at,
+            cosigner_wallet: model.cosigner_wallet,
+            cosigned_at: model.cosigned_at,
+          }}
+          entityType="model"
+        />
+      )}
 
       {/* Content sections */}
       <div className="grid gap-6 lg:grid-cols-2">
