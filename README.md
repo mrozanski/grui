@@ -1,6 +1,5 @@
-# Electric Guitar Registry
+# String Authority App
 
-**The Lore Of The Strings**
 
 A comprehensive digital registry for electric guitars, featuring detailed cataloging of manufacturers, models, individual instruments, and their historical significance. Built with modern web technologies to preserve and share the rich history of electric guitars.
 

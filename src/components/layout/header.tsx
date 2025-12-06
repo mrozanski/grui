@@ -8,10 +8,10 @@ export function Header() {
       <div className="flex flex-col items-center justify-center max-w-7xl mx-auto w-full">
         <div>
           <h1 className="text-3xl font-brand text-[var(--brand-color)] text-center header-title">
-            <span className="text-lg">ELECTRIC</span><br ></br>GUITAR REGISTRY
+            STRING AUTHORITY
           </h1>
           <p className="text-sm text-muted-foreground text-center">
-            The Lore Of The Strings
+            Verified Guitar Documentation & Provenance
           </p>
         </div>
         <div className="w-full flex justify-center">

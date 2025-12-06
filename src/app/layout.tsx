@@ -25,8 +25,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Electric Guitar Registry",
-  description: "Electric guitar provenance and authentication system",
+  title: "String Authority App",
+  description: "Verified Guitar Documentation & Provenance",
 };
 
 export default function RootLayout({

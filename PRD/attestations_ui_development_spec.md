@@ -1,8 +1,8 @@
-# Guitar Registry Attestations UI Development Specification
+# String Authority Attestations UI Development Specification
 
 ## Overview
 
-This specification defines the scope for adding attestation capabilities to the Guitar Registry NextJS application. The goal is to demonstrate how attestations will work without implementing actual EAS integration or IPFS storage. All attestation data will be stored in the existing PostgreSQL database with dummy/mock content.
+This specification defines the scope for adding attestation capabilities to the String Authority NextJS application. The goal is to demonstrate how attestations will work without implementing actual EAS integration or IPFS storage. All attestation data will be stored in the existing PostgreSQL database with dummy/mock content.
 
 ## Phase 1 Scope: Minimal Viable Attestation Demo
 

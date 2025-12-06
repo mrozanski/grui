@@ -2864,8 +2864,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Guitar Registry",
-  description: "Electric guitar provenance and authentication system",
+  title: "String Authority",
+  description: "Verified Guitar Documentation & Provenance",
 };
 
 export default function RootLayout({
@@ -2907,7 +2907,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Guitar Registry",
+  title: "String Authority",
   description: "Electric guitar provenance and authentication system",
 };
 

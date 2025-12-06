@@ -3,13 +3,13 @@
 **Version:** 1.0
 **Date:** 2025-11-10
 **Status:** Draft for Review
-**Target:** Guitar Registry Web3 Integration - Phase 1
+**Target:** String Authority Web3 Integration - Phase 1
 
 ---
 
 ## Executive Summary
 
-This PRD defines the implementation of Ethereum Attestation Service (EAS) based attestations for guitar models and individual instruments within the Guitar Registry. The goal is to create a decentralized, manufacturer-verified, industry-standard system for tracking guitar models and individual instruments using cryptographic attestations that serve as the foundation for a permanent chain of provenance.
+This PRD defines the implementation of Ethereum Attestation Service (EAS) based attestations for guitar models and individual instruments within the String Authority. The goal is to create a decentralized, manufacturer-verified, industry-standard system for tracking guitar models and individual instruments using cryptographic attestations that serve as the foundation for a permanent chain of provenance.
 
 ### Key Objectives
 
@@ -39,7 +39,7 @@ This PRD defines the implementation of Ethereum Attestation Service (EAS) based 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Guitar Registry UI (Next.js)             │
+│                     String Authority UI (Next.js)             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │ Model Form   │  │ Instrument   │  │ Manufacturer │      │
 │  │ (Admin)      │  │ Form (Admin) │  │ Dashboard    │      │
@@ -131,7 +131,7 @@ string description
 
 **Overview:**
 
-EAS schemas are **immutable by design** - once registered on-chain, they cannot be modified. This ensures data integrity but requires a thoughtful versioning strategy for schema evolution. The Guitar Registry implements a three-pronged approach to track schema versions and maintain backward compatibility.
+EAS schemas are **immutable by design** - once registered on-chain, they cannot be modified. This ensures data integrity but requires a thoughtful versioning strategy for schema evolution. The String Authority implements a three-pronged approach to track schema versions and maintain backward compatibility.
 
 #### Version Metadata Schema
 
@@ -1664,8 +1664,8 @@ REDIS_URL=redis://localhost:6379
    - Build complete instrument provenance graphs
 
 3. **Interoperability**
-   - Other apps read Guitar Registry attestations
-   - Guitar Registry reads attestations from other systems
+   - Other apps read String Authority attestations
+   - String Authority reads attestations from other systems
    - Become standard for guitar provenance tracking
 
 ---

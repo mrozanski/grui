@@ -1,4 +1,4 @@
-# EAS Implementation Roadmap - Guitar Registry
+# EAS Implementation Roadmap - String Authority
 
 **Based on PRD:** `eas-model-instrument-attestations.md`
 **Created:** 2025-11-10

@@ -24,7 +24,7 @@
 
 ### **Brand/Display Font**
 - **Special Elite** - Reserved exclusively for:
-  - Main site title "Electric Guitar Registry"
+  - Main site title "String Authority App"
   - Major section headers when brand identity is important
   - Serial number displays (to reinforce the stamped/engraved aesthetic)
 

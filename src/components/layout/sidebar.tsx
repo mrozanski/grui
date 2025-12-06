@@ -31,7 +31,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center px-6">
         <Guitar className="h-8 w-8 text-white" />
         <span className="ml-3 text-xl font-brand text-white">
-          Electric Guitar Registry
+          String Authority
         </span>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
