@@ -39,9 +39,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${stardosStencil.variable} ${jetbrainsMono.variable} ${manrope.variable} antialiased`}
       >
-          <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-1 overflow-auto bg-surface p-6 max-w-7xl mx-auto w-full">
+            <main className="flex-1 bg-surface p-6 max-w-7xl mx-auto w-full">
               {children}
             </main>
           </div>
