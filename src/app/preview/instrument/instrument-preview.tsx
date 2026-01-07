@@ -4,6 +4,14 @@ import { Button } from '@/components/ui/button'
 import { formatCurrency, getSignificanceColor, getConditionColor } from '@/lib/guitar-utils'
 import Image from 'next/image'
 import jessicaData from '../../../../doc/jessica.json'
+import {
+  Timeline,
+  TimelineItem,
+  TimelineDot,
+  TimelineTime,
+  TimelineHeading,
+  TimelineDescription,
+} from '@/components/ui/timeline'
 
 export default async function InstrumentPreview() {
   const { manufacturer, model, individual_guitar } = jessicaData
@@ -192,14 +200,63 @@ export default async function InstrumentPreview() {
               </div>
             </div>
 
-            {/* Provenance Timeline Placeholder */}
+            {/* Provenance Timeline */}
             <div className="space-y-6 pt-4">
               <h2 className="text-2xl font-semibold font-title">Provenance Timeline</h2>
-              <div className="p-8 border-2 border-dashed border-border rounded-lg bg-muted/20">
-                <p className="text-center text-muted-foreground">
-                  Timeline component will be added in Phase 1.2 using HyperUI vertical timeline
-                </p>
-              </div>
+              <Timeline>
+                {[
+                  {
+                    date: "1988-03-15",
+                    title: "Manufacture",
+                    description: "Completed at Gibson’s Nashville factory. Final QC inspection passed and instrument logged under serial 8 0005."
+                  },
+                  {
+                    date: "1988-06-10",
+                    title: "Artist Allocation",
+                    description: "Presented to Slash by Gibson Artist Relations. Delivered as part of an endorsement package before the Use Your Illusion recording cycle."
+                  },
+                  {
+                    date: "1991-08-01",
+                    title: "Recording Session",
+                    description: "Primary studio guitar for Use Your Illusion tour rehearsals. Extensive use in pre‑production sessions and early tour dates."
+                  },
+                  {
+                    date: "1992-05-20",
+                    title: "Repair",
+                    description: "Headstock break professionally repaired. Neck fracture sustained during transport; repaired with splines and overspray by a major LA repair shop."
+                  },
+                  {
+                    date: "2003-11-05",
+                    title: "Modification",
+                    description: "Electronics and hardware update. Original pickups replaced with higher‑output humbuckers; tuners and bridge swapped to current touring spec."
+                  },
+                  {
+                    date: "2016-07-14",
+                    title: "Exhibition",
+                    description: "Displayed at a rock memorabilia showcase in Los Angeles. Loaned for a limited exhibition highlighting iconic instruments from Slash’s career."
+                  },
+                  {
+                    date: "2024-09-30",
+                    title: "Inspection & Attestation",
+                    description: "Condition and provenance documented by third‑party expert. Comprehensive inspection, photo set, and valuation; digital attestation issued and linked to Jessica’s registry entry."
+                  }
+                ].map((event, index) => (
+                  <TimelineItem key={index}>
+                    <TimelineDot />
+                    <TimelineTime>
+                      {new Date(event.date).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                      })}
+                    </TimelineTime>
+                    <TimelineHeading>{event.title}</TimelineHeading>
+                    <TimelineDescription>
+                      {event.description}
+                    </TimelineDescription>
+                  </TimelineItem>
+                ))}
+              </Timeline>
             </div>
 
           </div>
