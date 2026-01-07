@@ -1,0 +1,57 @@
+{
+  "manufacturer": {
+    "name": "Gibson Guitar Corporation",
+    "display_name": "Gibson",
+    "country": "USA",
+    "founded_year": 1902,
+    "website": "https://www.gibson.com",
+    "status": "active"
+  },
+  "model": {
+    "manufacturer_name": "Gibson Guitar Corporation",
+    "product_line_name": "Les Paul",
+    "name": "Les Paul Standard",
+    "year": 1988,
+    "production_type": "mass",
+    "description": "A Les Paul Standard from the late 1980s, representing a period of renewed focus on classic Gibson designs."
+  },
+  "individual_guitar": {
+    "model_reference": {
+      "manufacturer_name": "Gibson Guitar Corporation",
+      "model_name": "Les Paul Standard",
+      "year": 1988
+    },
+    "nickname": "Jessica",
+    "serial_number": "8 0005",
+    "significance_level": "historic",
+    "significance_notes": "A primary touring guitar for Slash since the late 1980s. Used extensively during the 'Use Your Illusion' era and throughout his career.",
+    "current_estimated_value": 150000.00,
+    "condition_rating": "relic",
+    "modifications": "Extensive modifications including a repaired headstock break, replaced tuners, and a variety of pickup changes over the years.",
+    "provenance_notes": "Gifted to Slash by Gibson in 1988. Has been a constant touring and recording companion for over three decades.",
+    "specifications": {
+      "body_wood": "Mahogany with maple top",
+      "neck_wood": "Mahogany",
+      "fingerboard_wood": "Rosewood",
+      "scale_length_inches": 24.75,
+      "num_frets": 22,
+      "neck_profile": "50s Rounded",
+      "bridge_type": "Tune-o-matic",
+      "pickup_configuration": "2 x humbuckers - Gibson 'PAF' style",
+      "electronics_description": "2 volume, 2 tone, 3-way toggle switch",
+      "hardware_finish": "Nickel",
+      "body_finish": "Cherry Sunburst",
+      "weight_lbs": 9.5,
+      "case_included": true,
+      "case_type": "Hardshell case"
+    },
+    "photos": [
+      {
+        "source": "jessica.jpg",
+        "type": "gallery",
+        "caption": "Front view of Jessica.",
+        "is_primary": true
+      }
+    ]
+  }
+}
