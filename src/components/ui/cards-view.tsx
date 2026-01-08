@@ -300,7 +300,7 @@ interface GuitarCardsViewProps {
 
 // Helper function to select the best available image for guitar cards
 function selectBestGuitarImage(images: GuitarCardsViewProps['guitars'][0]['images']): string {
-  const fallbackImage = "/images/guitars/guitar-default.jpg"
+  const fallbackImage = "/images/guitars/na.png"
   
   if (!images || images.length === 0) {
     return fallbackImage

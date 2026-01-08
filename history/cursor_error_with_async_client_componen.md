@@ -3332,7 +3332,7 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
         </div>
         
         <Image
-          src="/images/guitars/guitar-default.jpg"
+          src="/images/guitars/na.png"
           alt="Guitar placeholder"
           width={300}
           height={200}

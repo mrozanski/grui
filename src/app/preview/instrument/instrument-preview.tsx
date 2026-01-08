@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { formatCurrency, getSignificanceColor, getConditionColor } from '@/lib/guitar-utils'
+import { getSignificanceColor, getConditionColor } from '@/lib/guitar-utils'
 import Image from 'next/image'
 import jessicaData from '../../../../doc/jessica.json'
 import {
@@ -22,10 +22,10 @@ export default async function InstrumentPreview() {
   // Helper for spec rows - consistent 2-column layout
   const SpecRow = ({ label, value, mono = false }: { label: string, value: string | number, mono?: boolean }) => (
     <div className="flex items-baseline">
-      <span className="w-[140px] shrink-0 text-right pr-6 text-sm text-muted-foreground/60">
+      <span className="w-[140px] shrink-0 text-right pr-6 text-sm text-muted-foreground/60 font-title">
         {label}
       </span>
-      <span className={`text-sm text-foreground ${mono ? 'font-mono' : 'font-medium'}`}>
+      <span className={`text-sm text-foreground ${mono ? 'font-mono' : ''}`}>
         {value}
       </span>
     </div>
@@ -34,7 +34,7 @@ export default async function InstrumentPreview() {
   // Helper for section headers - styled with background strip
   const SectionHeader = ({ title }: { title: string }) => (
     <div className="bg-muted/30 py-1.5 px-2 -mx-2 mb-3 mt-8 first:mt-0">
-      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-title">
         {title}
       </h3>
     </div>
@@ -67,11 +67,12 @@ export default async function InstrumentPreview() {
             {/* Title Section */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <h1 className="text-4xl font-light text-foreground font-title">
+                <h1 className="text-4xl font-light text-foreground font-title leading-[1.2]">
                   {title}
                 </h1>
-                <p className="text-xl text-muted-foreground">
-                  {subtitle}
+                <p className="text-lg font-light text-muted-foreground font-title">
+                  &ldquo;{individual_guitar.nickname}&rdquo; S/N{' '}
+                  <span className="font-mono">{individual_guitar.serial_number}</span>
                 </p>
               </div>
 
@@ -83,15 +84,15 @@ export default async function InstrumentPreview() {
             </div>
 
             {/* Instrument Details Section - Reordered */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold font-title">Instrument Details</h2>
+            <div className="space-y-6 pt-2">
+              <h2 className="text-2xl font-semibold font-title mt-10 mb-6">Instrument Details</h2>
 
               <div className="max-w-2xl space-y-8">
                 {/* 1. Significance */}
                 {individual_guitar.significance_notes && (
                   <div className="space-y-2">
-                    <h3 className="text-lg font-medium text-foreground">Significance</h3>
-                    <p className="text-base leading-relaxed text-foreground">
+                    <h3 className="text-lg font-normal font-title text-foreground">Significance</h3>
+                    <p className="text-[17px] leading-[1.6] text-foreground">
                       {individual_guitar.significance_notes}
                     </p>
                   </div>
@@ -100,8 +101,8 @@ export default async function InstrumentPreview() {
                 {/* 2. Provenance */}
                 {individual_guitar.provenance_notes && (
                   <div className="space-y-2">
-                    <h3 className="text-lg font-medium text-foreground">Provenance</h3>
-                    <p className="text-base leading-relaxed text-foreground">
+                    <h3 className="text-lg font-normal font-title text-foreground">Provenance</h3>
+                    <p className="text-[17px] leading-[1.6] text-foreground">
                       {individual_guitar.provenance_notes}
                     </p>
                   </div>
@@ -110,8 +111,8 @@ export default async function InstrumentPreview() {
                 {/* 3. Modifications */}
                 {individual_guitar.modifications && (
                   <div className="space-y-2">
-                    <h3 className="text-lg font-medium text-foreground">Modifications</h3>
-                    <p className="text-base leading-relaxed text-foreground">
+                    <h3 className="text-lg font-normal font-title text-foreground">Modifications</h3>
+                    <p className="text-[17px] leading-[1.6] text-foreground">
                       {individual_guitar.modifications}
                     </p>
                   </div>
@@ -120,8 +121,8 @@ export default async function InstrumentPreview() {
             </div>
 
             {/* Specifications Section */}
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold font-title mb-6">Specifications</h2>
+            <div className="space-y-2 pt-2">
+              <h2 className="text-2xl font-semibold font-title mt-10 mb-6">Specifications</h2>
 
               {/* Constrained width container for specs */}
               <div className="max-w-[550px]">
@@ -202,13 +203,13 @@ export default async function InstrumentPreview() {
 
             {/* Provenance Timeline */}
             <div className="space-y-6 pt-4">
-              <h2 className="text-2xl font-semibold font-title">Provenance Timeline</h2>
-              <Timeline>
+              <h2 className="text-2xl font-semibold font-title mt-10 mb-6">Provenance Timeline</h2>
+              <Timeline className="space-y-12">
                 {[
                   {
                     date: "1988-03-15",
                     title: "Manufacture",
-                    description: "Completed at Gibson’s Nashville factory. Final QC inspection passed and instrument logged under serial 8 0005."
+                    description: "Completed at Gibson's Nashville factory. Final QC inspection passed and instrument logged under serial 8 0005."
                   },
                   {
                     date: "1988-06-10",
@@ -233,25 +234,27 @@ export default async function InstrumentPreview() {
                   {
                     date: "2016-07-14",
                     title: "Exhibition",
-                    description: "Displayed at a rock memorabilia showcase in Los Angeles. Loaned for a limited exhibition highlighting iconic instruments from Slash’s career."
+                    description: "Displayed at a rock memorabilia showcase in Los Angeles. Loaned for a limited exhibition highlighting iconic instruments from Slash's career."
                   },
                   {
                     date: "2024-09-30",
                     title: "Inspection & Attestation",
-                    description: "Condition and provenance documented by third‑party expert. Comprehensive inspection, photo set, and valuation; digital attestation issued and linked to Jessica’s registry entry."
+                    description: "Condition and provenance documented by third‑party expert. Comprehensive inspection, photo set, and valuation; digital attestation issued and linked to Jessica's registry entry."
                   }
                 ].map((event, index) => (
                   <TimelineItem key={index}>
                     <TimelineDot />
-                    <TimelineTime>
+                    <TimelineTime className="font-mono text-xs text-muted-foreground/70 mb-2">
                       {new Date(event.date).toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric'
                       })}
                     </TimelineTime>
-                    <TimelineHeading>{event.title}</TimelineHeading>
-                    <TimelineDescription>
+                    <TimelineHeading className="font-title text-xl font-medium mb-3 text-foreground">
+                      {event.title}
+                    </TimelineHeading>
+                    <TimelineDescription className="text-[17px] leading-[1.6] text-foreground">
                       {event.description}
                     </TimelineDescription>
                   </TimelineItem>
@@ -280,7 +283,7 @@ export default async function InstrumentPreview() {
               {/* Summary Card */}
               <Card className="border-border/40 shadow-sm">
                 <div className="bg-muted/30 py-3 px-6 border-b border-border/40">
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider font-title">
                     Summary
                   </h3>
                 </div>
@@ -288,15 +291,16 @@ export default async function InstrumentPreview() {
 
                   {/* Estimated Value */}
                   <div className="space-y-1">
-                    <div className="text-sm text-muted-foreground">Estimated Value</div>
-                    <div className="text-3xl font-bold text-foreground">
-                      {formatCurrency(individual_guitar.current_estimated_value)}
+                    <div className="text-sm text-muted-foreground font-title">Estimated Value</div>
+                    <div className="text-3xl font-bold text-foreground flex items-baseline">
+                      <span className="text-2xl mr-0.5">$</span>
+                      <span className="font-mono">{individual_guitar.current_estimated_value.toLocaleString()}</span>
                     </div>
                   </div>
 
                   {/* Condition */}
                   <div className="space-y-2">
-                    <div className="text-sm text-muted-foreground">Condition</div>
+                    <div className="text-sm text-muted-foreground font-title">Condition</div>
                     <Badge className={getConditionColor(individual_guitar.condition_rating)}>
                       {individual_guitar.condition_rating}
                     </Badge>
@@ -304,16 +308,16 @@ export default async function InstrumentPreview() {
 
                   {/* Verification */}
                   <div className="space-y-2">
-                    <div className="text-sm text-muted-foreground">Verification</div>
+                    <div className="text-sm text-muted-foreground font-title">Verification</div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="success">Verified</Badge>
+                      <Badge variant="success" className="font-mono text-xs">Verified</Badge>
                     </div>
                   </div>
 
                   {/* Attestations */}
                   <div className="space-y-2">
-                    <div className="text-sm text-muted-foreground">Attestations</div>
-                    <div className="text-lg font-semibold">10</div>
+                    <div className="text-sm text-muted-foreground font-title">Attestations</div>
+                    <div className="text-lg font-semibold font-mono">10</div>
                   </div>
 
                   {/* CTA */}

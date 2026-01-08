@@ -158,7 +158,7 @@ export default async function GuitarDetail({ params }: GuitarDetailProps) {
         </div>
         
         <Image
-          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/na.png"}
           alt={primaryImage?.caption || "Guitar image"}
           width={300}
           height={200}

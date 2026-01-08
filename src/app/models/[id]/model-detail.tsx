@@ -146,7 +146,7 @@ export default async function ModelDetail({ params }: ModelDetailProps) {
         </div>
         
         <Image
-          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/na.png"}
           alt={primaryImage?.caption || "Guitar model image X"}
           width={400}
           height={300}

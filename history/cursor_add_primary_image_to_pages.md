@@ -110,7 +110,7 @@ Now I need to update the Image component to use the primary image:
 
 ```typescriptreact
         <Image
-          src="/images/guitars/guitar-default.jpg"
+          src="/images/guitars/na.png"
           alt="Guitar placeholder"
           width={300}
           height={200}
@@ -120,7 +120,7 @@ Now I need to update the Image component to use the primary image:
 ->
 
         <Image
-          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/na.png"}
           alt={primaryImage?.caption || "Guitar image"}
           width={300}
           height={200}
@@ -212,7 +212,7 @@ Now I need to update the Image component in the model detail page:
 
 ```typescriptreact
         <Image
-          src="/images/guitars/guitar-default.jpg"
+          src="/images/guitars/na.png"
           alt="Guitar model placeholder"
           width={400}
           height={300}
@@ -221,7 +221,7 @@ Now I need to update the Image component in the model detail page:
 ->
 
         <Image
-          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/guitar-default.jpg"}
+          src={primaryImage?.medium_url || primaryImage?.original_url || "/images/guitars/na.png"}
           alt={primaryImage?.caption || "Guitar model image"}
           width={400}
           height={300}
