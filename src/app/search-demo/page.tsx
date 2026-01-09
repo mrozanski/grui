@@ -91,18 +91,21 @@ export default function SearchDemoPage() {
     }
     
     try {
+      // Get search API base URL from environment variable, fallback to localhost for local dev
+      const searchApiBaseUrl = process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:8000'
+      
       let endpoint: string
       const params = new URLSearchParams()
       
       if (searchType === 'model') {
-        endpoint = 'http://localhost:8000/api/search/models'
+        endpoint = `${searchApiBaseUrl}/api/search/models`
         if (formData.name.trim()) params.append('model_name', formData.name.trim())
         if (formData.manufacturer.trim()) params.append('manufacturer_name', formData.manufacturer.trim())
         if (formData.yearFrom.trim()) params.append('year', formData.yearFrom.trim())
         if (formData.page) params.append('page', formData.page.toString())
         if (formData.pageSize) params.append('page_size', formData.pageSize.toString())
       } else {
-        endpoint = 'http://localhost:8000/api/search/instruments'
+        endpoint = `${searchApiBaseUrl}/api/search/instruments`
         
         if (formData.serialNumber.trim()) {
           // Serial number search

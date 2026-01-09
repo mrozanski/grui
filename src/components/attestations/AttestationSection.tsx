@@ -35,8 +35,9 @@ function truncateAddress(address: string, startChars = 6, endChars = 4) {
 }
 
 export function AttestationSection({ attestation, entityType }: AttestationSectionProps) {
+  const ipfsGateway = process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud'
   const ipfsGatewayUrl = attestation.ipfs_cid 
-    ? `https://gateway.pinata.cloud/ipfs/${attestation.ipfs_cid}`
+    ? `${ipfsGateway}/ipfs/${attestation.ipfs_cid}`
     : null
 
   return (
