@@ -8,6 +8,7 @@ import {
   getGuitarDisplayYear, 
   getSignificanceColor, 
   getConditionColor, 
+  getProductionTypeColor,
   formatCurrency as formatCurrencyGuitar 
 } from "@/lib/guitar-utils"
 
@@ -155,21 +156,6 @@ interface ModelCardsViewProps {
       specifications: number
     }
   }>
-}
-
-function getProductionTypeColor(type: string | null) {
-  switch (type?.toLowerCase()) {
-    case 'mass':
-      return 'bg-success text-white'
-    case 'limited':
-      return 'bg-info text-white'
-    case 'custom':
-      return 'bg-primary text-white'
-    case 'prototype':
-      return 'bg-warning text-white'
-    default:
-      return 'bg-muted text-muted-foreground'
-  }
 }
 
 function formatCurrency(amount: number | null | unknown, currency: string | null = 'USD') {

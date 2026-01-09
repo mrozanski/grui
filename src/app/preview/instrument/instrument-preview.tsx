@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getSignificanceColor, getConditionColor } from '@/lib/guitar-utils'
 import Image from 'next/image'
-import jessicaData from '../../../../doc/jessica.json'
+import jessicaData from '../../../../mock-data/jessica.json'
 import {
   Timeline,
   TimelineItem,

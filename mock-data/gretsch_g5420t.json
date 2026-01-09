@@ -1,0 +1,36 @@
+{
+  "manufacturer": {
+    "name": "Gretsch",
+    "country": "United States",
+    "founded_year": 1883,
+    "website": "https://www.gretsch.com",
+    "status": "active",
+    "notes": "Founded by Friedrich Gretsch in Brooklyn, New York."
+  },
+  "model": {
+    "manufacturer_name": "Gretsch",
+    "product_line_name": "Electromatic Collection",
+    "name": "G5420T Electromatic Hollow Body Single-Cut with Bigsby",
+    "year": 2012,
+    "production_type": "mass",
+    "msrp_original": 1149.00,
+    "currency": "USD",
+    "description": "The G5420T Electromatic Hollow Body Single-Cut with Bigsby features a laminated maple body with vintage-inspired contours and refined arches, as well as trestle block bracing to help reduce unwanted feedback.",
+    "specifications": {
+      "body_wood": "Laminated Maple",
+      "neck_wood": "Maple",
+      "fingerboard_wood": "Laurel",
+      "scale_length_inches": 24.6,
+      "num_frets": 22,
+      "nut_width_inches": 1.6875,
+      "neck_profile": "Classic C",
+      "bridge_type": "Adjusto-Matic",
+      "pickup_configuration": "2 x FT-5E Filter'Tron",
+      "electronics_description": "Volume 1 (Neck), Volume 2 (Bridge), Master Volume, Master Tone",
+      "hardware_finish": "Nickel",
+      "body_finish": "Gloss",
+      "case_included": false,
+      "case_type": "Optional G2162"
+    }
+  }
+}
