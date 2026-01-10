@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Factory, Guitar, Package, FileText, Users } from "lucide-react"
+import { Factory, Guitar, Package, FileText } from "lucide-react"
 import Link from "next/link"
 import { getGuitarDisplayName, getSignificanceColor } from "@/lib/guitar-utils"
 

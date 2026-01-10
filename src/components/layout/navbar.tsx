@@ -8,7 +8,6 @@ import {
   Factory, 
   Package, 
   FileText, 
-  Users, 
   TrendingUp,
   Home,
   Menu,

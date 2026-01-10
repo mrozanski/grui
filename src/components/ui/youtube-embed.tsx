@@ -2,7 +2,6 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface YouTubeEmbedProps {
-  videoId?: string
   imageSrc: string
   imageAlt: string
   caption?: string
@@ -10,7 +9,6 @@ interface YouTubeEmbedProps {
 }
 
 export function YouTubeEmbed({ 
-  videoId, 
   imageSrc, 
   imageAlt,
   caption,

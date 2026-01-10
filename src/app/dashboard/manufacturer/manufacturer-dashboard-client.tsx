@@ -71,13 +71,13 @@ export function ManufacturerDashboardClient() {
       // Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
-      });
+      }) as string[];
 
-      if (!accounts || (accounts as string[]).length === 0) {
+      if (!accounts || !Array.isArray(accounts) || accounts.length === 0) {
         throw new Error('No accounts found. Please connect your wallet.');
       }
 
-      const address = (accounts as string[])[0];
+      const address = accounts[0];
       setWalletAddress(address);
 
       // Load manufacturer and attestations

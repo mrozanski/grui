@@ -7,7 +7,6 @@ import {
   Wallet,
   CheckCircle,
   XCircle,
-  MoreVertical,
   Copy,
   ExternalLink,
 } from 'lucide-react';
@@ -18,7 +17,7 @@ interface WalletListProps {
   manufacturerId: string;
 }
 
-export function WalletList({ wallets, manufacturerId }: WalletListProps) {
+export function WalletList({ wallets }: WalletListProps) {
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
   const copyAddress = async (address: string) => {

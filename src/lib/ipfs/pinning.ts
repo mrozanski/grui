@@ -10,8 +10,8 @@
 import { prisma } from '@/lib/prisma';
 import { pinJSONToIPFS, isPinataConfigured } from './client';
 import type { OffchainAttestationResult } from '../eas/attestation';
-import { decodeModelAttestationV1, safeDecodeModelAttestationV1 } from '../eas/schemas/decoders/model-v1';
-import { decodeInstrumentAttestationV1, safeDecodeInstrumentAttestationV1 } from '../eas/schemas/decoders/instrument-v1';
+import { safeDecodeModelAttestationV1 } from '../eas/schemas/decoders/model-v1';
+import { safeDecodeInstrumentAttestationV1 } from '../eas/schemas/decoders/instrument-v1';
 import { EAS_CONFIG } from '../eas/config';
 
 /**
@@ -163,7 +163,7 @@ export async function updateAttestationWithIPFS(
  * @returns Number of successfully pinned attestations
  */
 export async function batchPinAttestations(attestationUids: string[]): Promise<number> {
-  let successCount = 0;
+  const successCount = 0;
 
   for (const uid of attestationUids) {
     try {
@@ -183,15 +183,12 @@ export async function batchPinAttestations(attestationUids: string[]): Promise<n
         continue;
       }
 
-      // Reconstruct attestation object (simplified - may need full reconstruction)
-      const attestation = {
-        uid: record.uid,
-        sig: {}, // Would need to reconstruct from stored data
-      } as OffchainAttestationResult;
-
-      // Pin to IPFS
-      await updateAttestationWithIPFS(uid, attestation);
-      successCount++;
+      // Note: We cannot fully reconstruct the SignedOffchainAttestation from database records alone
+      // as we don't store the complete attestation structure (domain, message, signature, etc.)
+      // This function is intended for attestations that were pinned at creation time.
+      // For attestations without IPFS CIDs, they would need to be re-created with full attestation data.
+      console.warn(`⚠️  Cannot reconstruct full attestation for ${uid} - skipping. Full attestation data required for IPFS pinning.`);
+      continue;
     } catch (error) {
       console.error(`Error pinning attestation ${uid}:`, error);
     }

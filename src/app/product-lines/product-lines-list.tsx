@@ -15,6 +15,7 @@ async function getProductLines() {
           select: {
             id: true,
             name: true,
+            display_name: true,
             country: true,
           },
         },
@@ -54,10 +55,21 @@ async function getProductLines() {
   )
 
   // Combine product lines with their images
-  return productLines.map(productLine => ({
-    ...productLine,
-    image: imageMap.get(productLine.id) || null,
-  }))
+  return productLines.map(productLine => {
+    const image = imageMap.get(productLine.id)
+    return {
+      ...productLine,
+      image: image ? {
+        id: image.id,
+        thumbnail_url: image.thumbnail_url,
+        small_url: image.small_url,
+        medium_url: image.medium_url,
+        large_url: image.large_url,
+        original_url: image.original_url,
+        caption: image.caption,
+      } : null,
+    }
+  })
 }
 
 export default async function ProductLinesList() {

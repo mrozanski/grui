@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ExternalLink, MapPin, Calendar, Guitar, FileText, Package, DollarSign } from "lucide-react"
+import { ExternalLink, MapPin, Calendar, Guitar, FileText, DollarSign } from "lucide-react"
 import { 
   getGuitarDisplayName, 
   getGuitarDisplayYear, 

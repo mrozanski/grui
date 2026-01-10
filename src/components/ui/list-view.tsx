@@ -1,25 +1,24 @@
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
 
-interface ListViewProps {
-  data: any[]
+interface ListViewProps<T extends { id: string }> {
+  data: T[]
   fields: {
     key: string
     label: string
-    render?: (item: any) => React.ReactNode
+    render?: (item: T) => React.ReactNode
   }[]
-  getHref: (item: any) => string
+  getHref: (item: T) => string
   emptyMessage?: string
   emptyIcon?: React.ReactNode
 }
 
-export function ListView({ 
+export function ListView<T extends { id: string }>({ 
   data, 
   fields, 
   getHref, 
   emptyMessage = "No items found.", 
   emptyIcon 
-}: ListViewProps) {
+}: ListViewProps<T>) {
   if (data.length === 0) {
     return (
       <div className="text-center py-12">
@@ -57,11 +56,11 @@ export function ListView({
                       href={getHref(item)}
                       className="text-primary hover:text-primary/80 font-medium"
                     >
-                      {field.render ? field.render(item) : item[field.key]}
+                      {field.render ? field.render(item) : (item as Record<string, unknown>)[field.key] as React.ReactNode}
                     </Link>
                   ) : (
                     <span className="text-foreground">
-                      {field.render ? field.render(item) : item[field.key]}
+                      {field.render ? field.render(item) : (item as Record<string, unknown>)[field.key] as React.ReactNode}
                     </span>
                   )}
                 </td>

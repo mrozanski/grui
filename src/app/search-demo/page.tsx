@@ -25,6 +25,26 @@ interface SearchResult {
   type: 'model' | 'guitar';
 }
 
+interface ApiModel {
+  id: string;
+  model_name: string;
+  year: number;
+  manufacturer_name: string;
+}
+
+interface ApiGuitar {
+  id: string;
+  model_name: string;
+  serial_number: string | null;
+  year_estimate: string | null;
+  manufacturer_name: string;
+}
+
+interface ApiResponse {
+  models?: ApiModel[];
+  individual_guitars?: ApiGuitar[];
+}
+
 export default function SearchDemoPage() {
   const [searchType, setSearchType] = useState<'model' | 'guitar'>('model')
   const [formData, setFormData] = useState({
@@ -129,12 +149,12 @@ export default function SearchDemoPage() {
         throw new Error(errorData.message || `API Error: ${response.status} ${response.statusText}`)
       }
       
-      const data = await response.json()
+      const data = await response.json() as ApiResponse
       
       // Transform API response to our SearchResult format
       let results: SearchResult[] = []
       if (searchType === 'model' && data.models) {
-        results = data.models.map((model: any) => ({
+        results = data.models.map((model: ApiModel) => ({
           id: model.id,
           name: model.model_name,
           year: model.year,
@@ -142,11 +162,11 @@ export default function SearchDemoPage() {
           type: 'model' as const
         }))
       } else if (searchType === 'guitar' && data.individual_guitars) {
-        results = data.individual_guitars.map((guitar: any) => ({
+        results = data.individual_guitars.map((guitar: ApiGuitar) => ({
           id: guitar.id,
           name: guitar.model_name,
-          serial_number: guitar.serial_number,
-          year: guitar.year_estimate,
+          serial_number: guitar.serial_number ?? undefined,
+          year: guitar.year_estimate ? Number(guitar.year_estimate) : undefined,
           manufacturer_name: guitar.manufacturer_name,
           type: 'guitar' as const
         }))

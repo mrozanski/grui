@@ -7,7 +7,6 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { EAS_CONFIG } from '../config';
 
 /**
  * Schema version record type

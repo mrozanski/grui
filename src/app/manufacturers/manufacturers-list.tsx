@@ -7,6 +7,7 @@ async function getManufacturers() {
       select: {
         id: true,
         name: true,
+        display_name: true,
         country: true,
         founded_year: true,
         website: true,
@@ -50,10 +51,21 @@ async function getManufacturers() {
   )
 
   // Combine manufacturers with their logos
-  return manufacturers.map(manufacturer => ({
-    ...manufacturer,
-    logo: logoMap.get(manufacturer.id) || null,
-  }))
+  return manufacturers.map(manufacturer => {
+    const logo = logoMap.get(manufacturer.id)
+    return {
+      ...manufacturer,
+      logo: logo ? {
+        id: logo.id,
+        thumbnail_url: logo.thumbnail_url,
+        small_url: logo.small_url,
+        medium_url: logo.medium_url,
+        large_url: logo.large_url,
+        original_url: logo.original_url,
+        caption: logo.caption,
+      } : null,
+    }
+  })
 }
 
 export default async function ManufacturersList() {

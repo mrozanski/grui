@@ -16,6 +16,7 @@ async function getModels() {
         select: {
           id: true,
           name: true,
+          display_name: true,
         }
       },
       product_lines: {

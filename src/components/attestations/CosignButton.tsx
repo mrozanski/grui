@@ -21,7 +21,6 @@ export function CosignButton({
 }: CosignButtonProps) {
   const [step, setStep] = useState<CosignStep>('idle');
   const [error, setError] = useState<string | null>(null);
-  const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
 
   const handleCosign = useCallback(async () => {
     setError(null);
@@ -36,14 +35,13 @@ export function CosignButton({
       // 2. Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
-      });
+      }) as string[];
 
-      if (!accounts || (accounts as string[]).length === 0) {
+      if (!accounts || !Array.isArray(accounts) || accounts.length === 0) {
         throw new Error('No accounts found');
       }
 
-      const walletAddress = (accounts as string[])[0];
-      setConnectedAddress(walletAddress);
+      const walletAddress = accounts[0];
 
       // 3. Create co-sign message (must match server's createCosignMessage exactly)
       setStep('signing');
@@ -59,10 +57,10 @@ export function CosignButton({
       );
 
       // 4. Request signature
-      const signature = await window.ethereum.request({
+      const signature = (await window.ethereum.request({
         method: 'personal_sign',
         params: [message, walletAddress],
-      });
+      })) as string;
 
       // 5. Submit to API
       setStep('submitting');
@@ -94,7 +92,6 @@ export function CosignButton({
   const reset = useCallback(() => {
     setStep('idle');
     setError(null);
-    setConnectedAddress(null);
   }, []);
 
   // Render based on step

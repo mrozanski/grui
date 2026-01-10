@@ -9,26 +9,26 @@ interface SortConfig {
   direction: 'asc' | 'desc'
 }
 
-interface SortableListViewProps {
-  data: any[]
+interface SortableListViewProps<T extends { id: string }> {
+  data: T[]
   fields: {
     key: string
     label: string
-    render?: (item: any) => React.ReactNode
+    render?: (item: T) => React.ReactNode
     sortable?: boolean
   }[]
-  getHref: (item: any) => string
+  getHref: (item: T) => string
   emptyMessage?: string
   emptyIcon?: React.ReactNode
 }
 
-export function SortableListView({ 
+export function SortableListView<T extends { id: string }>({ 
   data, 
   fields, 
   getHref, 
   emptyMessage = "No items found.", 
   emptyIcon 
-}: SortableListViewProps) {
+}: SortableListViewProps<T>) {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null)
 
   const handleSort = (key: string) => {
@@ -42,19 +42,18 @@ export function SortableListView({
   }
 
   const sortedData = sortConfig ? [...data].sort((a, b) => {
-    const field = fields.find(f => f.key === sortConfig.key)
-    let aValue = a[sortConfig.key]
-    let bValue = b[sortConfig.key]
+    let aValue = (a as Record<string, unknown>)[sortConfig.key]
+    let bValue = (b as Record<string, unknown>)[sortConfig.key]
     
     // Handle nested properties (like manufacturers.name)
     if (sortConfig.key === 'manufacturer') {
-      aValue = a.manufacturers?.name || 'Unknown'
-      bValue = b.manufacturers?.name || 'Unknown'
+      aValue = ((a as Record<string, unknown>).manufacturers as { name?: string } | undefined)?.name || 'Unknown'
+      bValue = ((b as Record<string, unknown>).manufacturers as { name?: string } | undefined)?.name || 'Unknown'
     }
     
     if (sortConfig.key === 'product_line') {
-      aValue = a.product_lines?.name || 'N/A'
-      bValue = b.product_lines?.name || 'N/A'
+      aValue = ((a as Record<string, unknown>).product_lines as { name?: string } | undefined)?.name || 'N/A'
+      bValue = ((b as Record<string, unknown>).product_lines as { name?: string } | undefined)?.name || 'N/A'
     }
     
     // Handle null/undefined values
@@ -63,8 +62,8 @@ export function SortableListView({
     
     // Handle dates
     if (sortConfig.key === 'updated_at' || sortConfig.key === 'introduced_year') {
-      aValue = aValue ? (aValue instanceof Date ? aValue : new Date(aValue)) : new Date(0)
-      bValue = bValue ? (bValue instanceof Date ? bValue : new Date(bValue)) : new Date(0)
+      aValue = aValue ? (aValue instanceof Date ? aValue : new Date(aValue as string | number)) : new Date(0)
+      bValue = bValue ? (bValue instanceof Date ? bValue : new Date(bValue as string | number)) : new Date(0)
     }
     
     // Handle numbers
@@ -75,13 +74,16 @@ export function SortableListView({
     
     // Handle models count
     if (sortConfig.key === 'models') {
-      aValue = a._count?.models || 0
-      bValue = b._count?.models || 0
+      aValue = ((a as Record<string, unknown>)._count as { models?: number } | undefined)?.models || 0
+      bValue = ((b as Record<string, unknown>)._count as { models?: number } | undefined)?.models || 0
     }
     
     let result = 0
-    if (aValue < bValue) result = -1
-    if (aValue > bValue) result = 1
+    // Convert to strings or numbers for comparison
+    const aStr = String(aValue ?? '')
+    const bStr = String(bValue ?? '')
+    if (aStr < bStr) result = -1
+    if (aStr > bStr) result = 1
     
     return sortConfig.direction === 'desc' ? -result : result
   }) : data
@@ -139,11 +141,11 @@ export function SortableListView({
                       href={getHref(item)}
                       className="text-primary hover:text-primary/80 font-medium"
                     >
-                      {field.render ? field.render(item) : item[field.key]}
+                      {field.render ? field.render(item) : (item as Record<string, unknown>)[field.key] as React.ReactNode}
                     </Link>
                   ) : (
                     <span className="text-foreground">
-                      {field.render ? field.render(item) : item[field.key]}
+                      {field.render ? field.render(item) : (item as Record<string, unknown>)[field.key] as React.ReactNode}
                     </span>
                   )}
                 </td>

@@ -42,17 +42,13 @@ export async function verifyAttestationSignature(
  * @returns The signer's Ethereum address
  */
 export async function recoverAttestationSigner(
-  attestation: OffchainAttestationResult
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _attestation: OffchainAttestationResult
 ): Promise<string> {
   try {
     // Use EAS SDK to get the attestor/signer
     // The signer is embedded in the attestation structure
     // For offchain attestations, we can extract it from the signature
-    const eas = new EAS(EAS_CONFIG.easContractAddress);
-    const offchain = await eas.getOffchain();
-
-    // The signer can be recovered from the attestation
-    // This is a simplified version - actual recovery would use the full attestation data
     // For now, we'll return a placeholder that indicates this needs the full EAS implementation
     throw new Error('Signer recovery not yet fully implemented - use verifyAttestationSigner instead');
   } catch (error) {

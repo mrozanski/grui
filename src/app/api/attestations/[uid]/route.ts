@@ -9,10 +9,10 @@ import { getAttestationByUID } from '@/lib/data/attestations';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { uid: string } }
+  { params }: { params: Promise<{ uid: string }> }
 ) {
   try {
-    const { uid } = params;
+    const { uid } = await params;
 
     if (!uid) {
       return NextResponse.json(

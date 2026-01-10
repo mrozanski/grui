@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Wallet, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
@@ -42,13 +41,13 @@ export function WalletRegistrationForm({
       // Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
-      });
+      }) as string[];
 
-      if (!accounts || accounts.length === 0) {
+      if (!accounts || !Array.isArray(accounts) || accounts.length === 0) {
         throw new Error('No accounts found. Please connect your wallet.');
       }
 
-      const address = accounts[0] as string;
+      const address = accounts[0];
       setWalletAddress(address);
 
       // Get verification message from API
@@ -89,10 +88,10 @@ export function WalletRegistrationForm({
       }
 
       // Request signature
-      const signature = await window.ethereum.request({
+      const signature = (await window.ethereum.request({
         method: 'personal_sign',
         params: [message, walletAddress],
-      });
+      })) as string;
 
       // Register wallet via API
       const response = await fetch('/api/manufacturers/wallets', {
