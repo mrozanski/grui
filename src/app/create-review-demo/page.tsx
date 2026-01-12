@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { CreateReviewModal } from '@/components/reviews/CreateReviewModal'
 
@@ -20,7 +20,7 @@ const sampleRelatedModels = [
   }
 ];
 
-export default function CreateReviewDemoPage() {
+function CreateReviewDemoContent() {
   const searchParams = useSearchParams()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [initialModelId, setInitialModelId] = useState('019857b5-619a-7684-b298-e7cda33c3d36')
@@ -88,5 +88,17 @@ export default function CreateReviewDemoPage() {
         onSuccess={handleSuccess}
       />
     </div>
+  )
+}
+
+export default function CreateReviewDemoPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-8">
+        <div className="text-center">Loading...</div>
+      </div>
+    }>
+      <CreateReviewDemoContent />
+    </Suspense>
   )
 } 
