@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getSignificanceColor, getConditionColor } from '@/lib/guitar-utils'
 import Image from 'next/image'
-import jessicaData from '../../../../mock-data/jessica.json'
 import {
   Timeline,
   TimelineItem,
@@ -12,12 +11,26 @@ import {
   TimelineHeading,
   TimelineDescription,
 } from '@/components/ui/timeline'
+import { loadInstrumentData, loadTimelineData } from '@/lib/data/mock-instruments'
 
-export default async function InstrumentPreview() {
-  const { manufacturer, model, individual_guitar } = jessicaData
+interface InstrumentPreviewProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function InstrumentPreview({ params }: InstrumentPreviewProps) {
+  const { id } = await params
+  const instrumentData = await loadInstrumentData(id)
+  const timelineEvents = await loadTimelineData(id)
+  
+  const { manufacturer, model, individual_guitar } = instrumentData
   const title = `${manufacturer.display_name} ${model.name} (${model.year})`
   const subtitle = `"${individual_guitar.nickname}" S/N ${individual_guitar.serial_number}`
-  const imagePath = '/images/guitars/jessica.jpg'
+  
+  // Find primary image from photos array, fallback to na.png
+  const primaryPhoto = individual_guitar.photos.find(photo => photo.is_primary)
+  const imagePath = primaryPhoto 
+    ? `/images/guitars/${primaryPhoto.source}`
+    : '/images/guitars/na.png'
 
   // Helper for spec rows - consistent 2-column layout
   const SpecRow = ({ label, value, mono = false }: { label: string, value: string | number, mono?: boolean }) => (
@@ -204,62 +217,32 @@ export default async function InstrumentPreview() {
             {/* Provenance Timeline */}
             <div className="space-y-6 pt-4">
               <h2 className="text-2xl font-semibold font-title mt-10 mb-6">Provenance Timeline</h2>
-              <Timeline className="space-y-12">
-                {[
-                  {
-                    date: "1988-03-15",
-                    title: "Manufacture",
-                    description: "Completed at Gibson's Nashville factory. Final QC inspection passed and instrument logged under serial 8 0005."
-                  },
-                  {
-                    date: "1988-06-10",
-                    title: "Artist Allocation",
-                    description: "Presented to Slash by Gibson Artist Relations. Delivered as part of an endorsement package before the Use Your Illusion recording cycle."
-                  },
-                  {
-                    date: "1991-08-01",
-                    title: "Recording Session",
-                    description: "Primary studio guitar for Use Your Illusion tour rehearsals. Extensive use in pre‑production sessions and early tour dates."
-                  },
-                  {
-                    date: "1992-05-20",
-                    title: "Repair",
-                    description: "Headstock break professionally repaired. Neck fracture sustained during transport; repaired with splines and overspray by a major LA repair shop."
-                  },
-                  {
-                    date: "2003-11-05",
-                    title: "Modification",
-                    description: "Electronics and hardware update. Original pickups replaced with higher‑output humbuckers; tuners and bridge swapped to current touring spec."
-                  },
-                  {
-                    date: "2016-07-14",
-                    title: "Exhibition",
-                    description: "Displayed at a rock memorabilia showcase in Los Angeles. Loaned for a limited exhibition highlighting iconic instruments from Slash's career."
-                  },
-                  {
-                    date: "2024-09-30",
-                    title: "Inspection & Attestation",
-                    description: "Condition and provenance documented by third‑party expert. Comprehensive inspection, photo set, and valuation; digital attestation issued and linked to Jessica's registry entry."
-                  }
-                ].map((event, index) => (
-                  <TimelineItem key={index}>
-                    <TimelineDot />
-                    <TimelineTime className="font-mono text-xs text-muted-foreground/70 mb-2">
-                      {new Date(event.date).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      })}
-                    </TimelineTime>
-                    <TimelineHeading className="font-title text-xl font-medium mb-3 text-foreground">
-                      {event.title}
-                    </TimelineHeading>
-                    <TimelineDescription className="text-[17px] leading-[1.6] text-foreground">
-                      {event.description}
-                    </TimelineDescription>
-                  </TimelineItem>
-                ))}
-              </Timeline>
+              {timelineEvents.length > 0 ? (
+                <Timeline className="space-y-12">
+                  {timelineEvents.map((event, index) => (
+                    <TimelineItem key={index}>
+                      <TimelineDot />
+                      <TimelineTime className="font-mono text-xs text-muted-foreground/70 mb-2">
+                        {new Date(event.date).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        })}
+                      </TimelineTime>
+                      <TimelineHeading className="font-title text-xl font-medium mb-3 text-foreground">
+                        {event.title}
+                      </TimelineHeading>
+                      <TimelineDescription className="text-[17px] leading-[1.6] text-foreground">
+                        {event.description}
+                      </TimelineDescription>
+                    </TimelineItem>
+                  ))}
+                </Timeline>
+              ) : (
+                <p className="text-[17px] leading-[1.6] text-muted-foreground">
+                  No entries yet — be the first.
+                </p>
+              )}
             </div>
 
           </div>
